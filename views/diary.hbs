@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="navbar navbar-default">
+    <div class="navbar-form">
+      <button class="btn btn-link"><< Previous week</button>
+      <span class="static-text">Week of the: </span>
+      <input class="week-picker"
+             data-bind="value: week"
+             data-role="datepicker"
+             data-format="MMM dd">
+      <button class="btn btn-link">Next week >></button>
+    </div>
+
+  </div>
+  <ul class="nav nav-pills nav-justified">
+    {{#each diaries}}
+    <li {{#unless @index}}class="active"{{/unless}}>
+      <a href="#{{ _id }}" data-toggle="pill">{{dateFormat date ' Do: dddd'}}</a>
+    </li>
+    {{/each}}
+  </ul>
+  <div class="tab-content">
+    {{#each diaries}}
+    <div class="tab-pane fade {{#unless @index}}in active {{/unless}}" id="{{ _id }}"></div>
+    {{/each}}
+  </div>
+</div>

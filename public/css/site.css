@@ -1,0 +1,22 @@
+﻿
+.radio-header {
+    display: inline-block;
+    width: 17px;
+    font-weight: bold;
+}
+.radio-header + .radio-header{
+    margin-left: 10px
+}
+
+.form-occurances {
+    width: 65px;
+    display: inline-block;
+}
+
+.input-padding {
+    margin-top: 5px;
+}
+
+.tab-content {
+    margin-top: 30px;
+}

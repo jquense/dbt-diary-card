@@ -1,0 +1,182 @@
+<form class="form-horizontal" method="POST" action="/diary">
+    <input type="hidden" value="{{ _id }}" name="_id"></input>
+    <input type="hidden" value="{{ dayOfWeek }}" name="dayOfWeek"></input>
+    <input type="hidden" value="{{ week }}" name="week"></input>
+    <input type="hidden" value="{{ year }}" name="year"></input>
+    <fieldset>
+        <legend>Behaviors</legend>
+        <div class="row">
+            <div class="col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3">
+              <span class="radio-header">0</span>
+              <span class="radio-header">1</span>
+              <span class="radio-header">2</span>
+              <span class="radio-header">3</span>
+              <span class="radio-header">4</span>
+              <span class="radio-header">5</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Use</label>
+            <div class="col-md-10 col-sm-9">
+                {{oneToFive 'use' 3 }}
+            </div>
+	      </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Suicide Ideation</label>
+            <div class="col-md-10 col-sm-9">
+                {{oneToFive 'suicide' 3 }}
+            </div>
+	    </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Self Harm</label>
+            <div class="col-md-10 col-sm-9">
+                {{oneToFive 'selfHarm' 3 }}
+            </div>
+	    </div>
+    </fieldset>
+	<fieldset>
+        <legend>Emotions</legend>
+        <div class="row">
+            <div class="col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3">
+                <span class="radio-header">0</span>
+                <span class="radio-header">1</span>
+                <span class="radio-header">2</span>
+                <span class="radio-header">3</span>
+                <span class="radio-header">4</span>
+                <span class="radio-header">5</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Pain</label>
+            <div class="col-md-10 col-sm-9">
+                {{oneToFive 'pain' pain }}
+            </div>
+	    </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Sadness</label>
+            <div class="col-md-10 col-sm-9">
+                {{oneToFive 'sadness' sadness }}
+            </div>
+	    </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Shame</label>
+            <div class="col-md-10 col-sm-9">
+                {{oneToFive 'shame' shame }}
+            </div>
+	    </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Anger</label>
+            <div class="col-md-10 col-sm-9">
+                {{oneToFive 'anger' anger }}
+            </div>
+	    </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Fear</label>
+            <div class="col-md-10 col-sm-9">
+                {{oneToFive 'fear' fear }}
+            </div>
+	    </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Urges</legend>
+
+        <div class="form-group ">
+            <label class="control-label col-md-2 col-sm-3">Alcohol</label>
+            <div class="col-md-10 col-sm-9">
+                <input class="form-occurances"
+                     {{bind-to 'value: alcohol.times' 
+                       role="numerictextbox"
+                       decimals=0
+                       format="#"
+                       min="0"}}/>
+                <span class="form-control-static" > Number of times</span>
+                <textarea name="alcohol[specify]" value="{{ alcohol.specify }}" class="form-control input-padding" placeholder="optionally specify what happened..."></textarea>
+            </div>
+	    </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Over the Counter Medications</label>
+            <div class="col-md-10 col-sm-9">
+                <input name="otc[times]" class="form-occurances"
+                       data-role="numerictextbox"
+                       data-decimals="0"
+                       data-format="#"
+                       data-min="0"
+                       value="{{ otc.times }}" />
+                <span class="form-control-static" > Number of times</span>
+                <textarea name="otc[specify]" value="{{ otc.specify }}" class="form-control input-padding" placeholder="optionally specify what happened..."></textarea>
+            </div>
+	    </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Prescription Medications</label>
+            <div class="col-md-10 col-sm-9">
+                <input name="prescription[times]" 
+                       value="{{ prescription.times }}" 
+                       class="form-occurances"
+                       data-role="numerictextbox"
+                       data-decimals="0"
+                       data-format="#"
+                       data-min="0"/>
+                <span class="form-control-static" > Number of times</span>
+                <textarea name="prescription[specify]" value="{{ prescription.specify }}" class="form-control input-padding" placeholder="optionally specify what happened..."></textarea>
+            </div>
+	    </div>
+        <div class="form-group">
+            <label class="control-label col-md-2 col-sm-3">Illicit Drugs</label>
+            <div class="col-md-10 col-sm-9">
+                <input name="illicit[times]" 
+                       value="{{ illicit.times }}" 
+                       class="form-occurances" 
+                       data-role="numerictextbox"
+                       data-decimals="0"
+                       data-format="#"
+                       data-min="0"/>
+                <span class="form-control-static" > Number of times</span>
+                <textarea name="illicit[specify]" value="{{ illicit.specify }}" class="form-control input-padding" placeholder="optionally specify what happened..."></textarea>
+            </div>
+	    </div>
+    </fieldset>
+    <fieldset>
+        <legend>---</legend>
+        <div class="form-group">
+          <div class="checkbox col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3">
+
+            <label>
+              <input type="checkbox" name="causedSelfHarm" value="true" />Caused self-harm</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-2 col-sm-3">Joy</label>
+          <div class="col-md-10 col-sm-9">
+            {{oneToFive 'joy' joy }}
+          </div>
+        </div>
+        <div class="form-group ">
+            <label class="control-label col-md-2 col-sm-3">Skills</label>
+            <div class="col-md-10 col-sm-9">
+                <label class="radio">
+                    <input type="radio" name="skills" value="0" checked="checked"/>Not thought about or used</label>
+                <label class="radio">
+                    <input type="radio" name="skills" value="1"/>Thought about, not used, did not want too</label>
+                <label class="radio">
+                    <input type="radio" name="skills" value="2"/>Thought about, not used, wanted to</label>
+                <label class="radio">
+                    <input type="radio" name="skills" value="3"/>Tried but could not use them</label>
+                <label class="radio">
+                    <input type="radio" name="skills" value="4"/>Tried, could do them, but they didn't help</label>
+                <label class="radio">
+                    <input type="radio" name="skills" value="5"/>Tried, could use them, helped</label>
+                <label class="radio">
+                    <input type="radio" name="skills" value="6"/>Did not try, used them, did not help</label>
+                <label class="radio">
+                    <input type="radio" name="skills" value="7"/>Did not try, used them, helped</label>
+            </div>
+	    </div>
+    </fieldset>
+
+    <div class="form-group">
+      <div class="col-sm-offset-3 col-md-offset-2 col-sm-9 col-md-10">
+        <button type="submit" class="btn btn-default">Save</button>
+      </div>
+    </div>
+</form>

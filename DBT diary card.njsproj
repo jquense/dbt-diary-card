@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Name>DBT diary card</Name>
+    <RootNamespace>DBT diary card</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>7cacfccf-e6ae-4620-8f17-e9579466fde8</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>server.js</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <NodejsPort>1337</NodejsPort>
+    <StartWebBrowser>true</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="bootstrap\build.js" />
+    <Compile Include="bootstrap\js\affix.js" />
+    <Compile Include="bootstrap\js\alert.js" />
+    <Compile Include="bootstrap\js\button.js" />
+    <Compile Include="bootstrap\js\carousel.js" />
+    <Compile Include="bootstrap\js\collapse.js" />
+    <Compile Include="bootstrap\js\dropdown.js" />
+    <Compile Include="bootstrap\js\modal.js" />
+    <Compile Include="bootstrap\js\popover.js" />
+    <Compile Include="bootstrap\js\scrollspy.js" />
+    <Compile Include="bootstrap\js\tab.js" />
+    <Compile Include="bootstrap\js\tests\unit\affix.js" />
+    <Compile Include="bootstrap\js\tests\unit\alert.js" />
+    <Compile Include="bootstrap\js\tests\unit\button.js" />
+    <Compile Include="bootstrap\js\tests\unit\carousel.js" />
+    <Compile Include="bootstrap\js\tests\unit\collapse.js" />
+    <Compile Include="bootstrap\js\tests\unit\dropdown.js" />
+    <Compile Include="bootstrap\js\tests\unit\modal.js" />
+    <Compile Include="bootstrap\js\tests\unit\phantom.js" />
+    <Compile Include="bootstrap\js\tests\unit\popover.js" />
+    <Compile Include="bootstrap\js\tests\unit\scrollspy.js" />
+    <Compile Include="bootstrap\js\tests\unit\tab.js" />
+    <Compile Include="bootstrap\js\tests\unit\tooltip.js" />
+    <Compile Include="bootstrap\js\tests\unit\transition.js" />
+    <Compile Include="bootstrap\js\tests\vendor\jquery.js" />
+    <Compile Include="bootstrap\js\tests\vendor\qunit.js" />
+    <Compile Include="bootstrap\js\tooltip.js" />
+    <Compile Include="bootstrap\js\transition.js" />
+    <Compile Include="gulpfile.js" />
+    <Compile Include="public\scripts\bootstrap.js" />
+    <Compile Include="public\scripts\bootstrap.min.js" />
+    <Compile Include="public\scripts\kendo.ui.core.min.js" />
+    <Compile Include="public\scripts\lodash.js" />
+    <Compile Include="src\bindings.js" />
+    <Compile Include="src\partials.js" />
+    <Compile Include="src\model.js.bak" />
+    <Compile Include="src\site.js" />
+    <Compile Include="public\scripts\lib.js" />
+    <Compile Include="public\scripts\jquery.min.js" />
+    <Compile Include="src\models\diary.js" />
+    <Compile Include="src\routes.js" />
+    <Compile Include="src\helpers.js" />
+    <Compile Include="server.js" />
+    <Compile Include="src\models\define.js" />
+    <Compile Include="src\views\diary.js" />
+    <Compile Include="src\views\index.js" />
+    <Compile Include="src\views\view.js" />
+    <Content Include="bootstrap\js\.jshintrc" />
+    <Content Include="bootstrap\js\tests\index.html" />
+    <Content Include="bootstrap\js\tests\vendor\qunit.css" />
+    <Content Include="bootstrap\less\alerts.less" />
+    <Content Include="bootstrap\less\badges.less" />
+    <Content Include="bootstrap\less\bootstrap.less" />
+    <Content Include="bootstrap\less\breadcrumbs.less" />
+    <Content Include="bootstrap\less\button-groups.less" />
+    <Content Include="bootstrap\less\buttons.less" />
+    <Content Include="bootstrap\less\carousel.less" />
+    <Content Include="bootstrap\less\close.less" />
+    <Content Include="bootstrap\less\code.less" />
+    <Content Include="bootstrap\less\component-animations.less" />
+    <Content Include="bootstrap\less\dropdowns.less" />
+    <Content Include="bootstrap\less\forms.less" />
+    <Content Include="bootstrap\less\glyphicons.less" />
+    <Content Include="bootstrap\less\grid.less" />
+    <Content Include="bootstrap\less\input-groups.less" />
+    <Content Include="bootstrap\less\jumbotron.less" />
+    <Content Include="bootstrap\less\labels.less" />
+    <Content Include="bootstrap\less\list-group.less" />
+    <Content Include="bootstrap\less\media.less" />
+    <Content Include="bootstrap\less\mixins.less" />
+    <Content Include="bootstrap\less\modals.less" />
+    <Content Include="bootstrap\less\navbar.less" />
+    <Content Include="bootstrap\less\navs.less" />
+    <Content Include="bootstrap\less\normalize.less" />
+    <Content Include="bootstrap\less\pager.less" />
+    <Content Include="bootstrap\less\pagination.less" />
+    <Content Include="bootstrap\less\panels.less" />
+    <Content Include="bootstrap\less\popovers.less" />
+    <Content Include="bootstrap\less\print.less" />
+    <Content Include="bootstrap\less\progress-bars.less" />
+    <Content Include="bootstrap\less\responsive-utilities.less" />
+    <Content Include="bootstrap\less\scaffolding.less" />
+    <Content Include="bootstrap\less\tables.less" />
+    <Content Include="bootstrap\less\thumbnails.less" />
+    <Content Include="bootstrap\less\tooltip.less" />
+    <Content Include="bootstrap\less\type.less" />
+    <Content Include="bootstrap\less\utilities.less" />
+    <Content Include="bootstrap\less\variables.less" />
+    <Content Include="bootstrap\less\wells.less" />
+    <Content Include="bootstrap\package.json" />
+    <Content Include="public\css\bootstrap.css" />
+    <Content Include="package.json" />
+    <Content Include="public\css\Bootstrap\editor.png" />
+    <Content Include="public\css\Bootstrap\imagebrowser.png" />
+    <Content Include="public\css\Bootstrap\indeterminate.gif" />
+    <Content Include="public\css\Bootstrap\loading-image.gif" />
+    <Content Include="public\css\Bootstrap\loading.gif" />
+    <Content Include="public\css\Bootstrap\loading_2x.gif" />
+    <Content Include="public\css\Bootstrap\slider-h.gif" />
+    <Content Include="public\css\Bootstrap\slider-v.gif" />
+    <Content Include="public\css\Bootstrap\sprite.png" />
+    <Content Include="public\css\Bootstrap\sprite_2x.png" />
+    <Content Include="public\css\kendo.bootstrap.min.css" />
+    <Content Include="public\css\site.css" />
+    <Content Include="README.md" />
+    <Content Include="views\index.hbs" />
+    <Content Include="views\diary.hbs" />
+    <Content Include="views\partials\number.hbs" />
+    <Content Include="views\diaryForm.hbs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bootstrap\" />
+    <Folder Include="bootstrap\js\" />
+    <Folder Include="bootstrap\js\tests\" />
+    <Folder Include="bootstrap\js\tests\unit\" />
+    <Folder Include="bootstrap\js\tests\vendor\" />
+    <Folder Include="bootstrap\less\" />
+    <Folder Include="public\css\Bootstrap\" />
+    <Folder Include="src\" />
+    <Folder Include="public\" />
+    <Folder Include="public\scripts\" />
+    <Folder Include="public\css\" />
+    <Folder Include="src\models\" />
+    <Folder Include="src\views\" />
+    <Folder Include="views\" />
+    <Folder Include="views\layouts\" />
+    <Folder Include="views\partials\" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

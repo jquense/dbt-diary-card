@@ -1,0 +1,302 @@
+var ObservableObject = kendo.data.ObservableObject
+  , _ = require('lodash')
+  , moment = require('moment')
+  , Model;
+
+var parsers = {
+    "number": function (value) {
+        return parseFloat(value);
+    },
+
+    "date": function (value) {
+        return moment(value).toDate()
+    },
+
+    "boolean": function (value) {
+        if (typeof value === 'string') 
+            return value.toLowerCase() === "true";
+   
+        return value != null ? !!value : value;
+    },
+
+    "string": function (value) {
+        return value != null ? (value + "") : value;
+    },
+
+    "default": function (value)  {return value;}
+};
+
+Model = ObservableObject.extend({
+
+    init: function (data) {
+        var self = this;
+
+        if (!data || _.size(data).length === 0) 
+            data = _.extend({}, self.defaults, data);
+        
+        if (data.url) {
+            self.urlTemplate = data.url;
+            data = _.omit(data, 'url')
+        }
+
+        ObservableObject.fn.init.call(self, data);
+
+        self.dirty = false;
+
+        
+        if (self.idField) {
+            self.id = self.get(self.idField);
+
+            if (self.id === undefined)
+                self.id = self._defaultId;
+        }
+    },
+
+    shouldSerialize: function (field) {
+        return ObservableObject.fn.shouldSerialize.call(this, field)
+            && field !== 'url'
+            && field !== 'uid'
+            && !(this.idField !== 'id' && field === 'id')
+            && field !== 'dirty'
+            && field !== '_accessors';
+    },
+
+    _parse: function (field, value) {
+        var self = this
+          , fieldName = field
+          , fields = (self.fields || {})
+          , parse;
+
+        field = fields[field];
+
+        if (!field)
+            field = getFieldByName(fields, fieldName);
+        
+        if (field) {
+            parse = field.parse;
+
+            if (!parse && field.type)
+                parse = parsers[field.type.toLowerCase()];
+        }
+
+        return parse ? parse(value) : value;
+    },
+
+    _notifyChange: function (e) {
+        var action = e.action;
+
+        if (action == 'add' || action == 'remove')
+            this.dirty = true;
+    },
+
+    editable: function (field) {
+        field = (this.fields || {})[field];
+        return field ? field.editable !== false : true;
+    },
+
+    set: function (field, value, initiator) {
+        var self = this;
+
+        if (self.editable(field)) {
+            value = self._parse(field, value);
+
+            if (!_.isEqual(value, self.get(field))) {
+                self.dirty = true;
+                ObservableObject.fn.set.call(self, field, value, initiator);
+            }
+        }
+    },
+
+    wrap: function(object, field, parent) {
+        var that = this,
+            type = toString.call(object);
+
+        if (object != null && (type === "[object Object]" || type === "[object Array]")) {
+            var isObservableArray = object instanceof ObservableArray;
+            var isDataSource = object instanceof DataSource;
+
+            if (type === "[object Object]" && !isDataSource && !isObservableArray) {
+
+                if (!(object instanceof ObservableObject))
+                    object = new ObservableObject(object);
+                
+                if (object.parent() != parent()) {
+                    object.bind('get', eventHandler(that, 'get', field, true));
+                    object.bind('change', eventHandler(that, 'change', field, true));
+                }
+            } else if (type === "[object Array]" || isObservableArray || isDataSource) {
+                if (!isObservableArray && !isDataSource) 
+                    object = new ObservableArray(object);
+
+                if (object.parent() != parent()) 
+                    object.bind('change', eventHandler(that, 'change', field, false));
+            }
+
+            object.parent = parent;
+        }
+
+        return object;
+    },
+
+    accept: function (data) {
+        var self = this
+          , parent = function () { return self; }
+          , field;
+
+        for (field in data) {
+            var value = data[field];
+
+            if (field.charAt(0) != '_')
+                value = self.wrap(data[field], field, parent);
+            
+            self._set(field, value);
+        }
+
+        if (self.idField) 
+            self.id = self.get(self.idField);
+        
+        self.dirty = false;
+    },
+
+    isNew: function () {
+        return this.id === this._defaultId;
+    },
+
+    url: function () {
+        if (_.isFunction(this.urlTemplate))
+            return this.urlTemplate(this);
+
+        return _.template(this.urlTemplate, this, {
+            interpolate: /\{\{(.+?)\}\}/g
+        });
+    },
+
+    fetch: function (options) {
+        var self = this;
+
+        return sync('read', self, options)
+            .then(function (data) {
+                self.accept(data);
+                self.trigger('read')
+            });
+    },
+
+    save: function (options) {
+        var self = this
+          , isNew = self.isNew();
+
+        return sync(isNew ? 'create' : 'update', self, options)
+            .then(function (data) {
+                self.accept(data);
+                self.trigger(isNew ? 'create' : 'update')
+            });
+    },
+
+    destroy: function (options) {
+        var self = this;
+
+        if (this.isNew())
+            return;
+
+        return sync('delete', self, options).then(function () {
+            self.trigger('delete')
+        });
+    }
+
+});
+
+Model.define = function (base, options) {
+    if (options === undefined) {
+        options = base;
+        base = Model;
+    }
+
+    var model,
+        proto = _.extend({ defaults: {} }, options),
+        name,
+        field,
+        type,
+        value,
+        idx,
+        length,
+        fields = {},
+        originalName,
+        id = proto.id;
+
+    if (id) {
+        proto.idField = id;
+        proto.defaults[id] = proto._defaultId = '';
+    }
+
+    if (proto.url)
+        this._urlTemplate = proto.url;
+
+    proto = _.omit(proto, 'id', 'url');
+
+    if (_.isArray(proto.fields)) {
+        for (idx = 0, length = proto.fields.length; idx < length; idx++) {
+
+            field = proto.fields[idx];
+
+            if (typeof field === 'string') 
+                fields[field] = {};
+            else if (field.field) 
+                fields[field.field] = field;
+            
+        }
+        proto.fields = fields;
+    }
+
+    for (name in proto.fields) {
+        field = proto.fields[name];
+        type = field.type || 'default';
+        value = null;
+        originalName = name;
+
+        name = typeof (field.field) === 'string'
+            ? field.field
+            : name;
+
+        if (!field.nullable)
+            value = proto.defaults[originalName !== name ? originalName : name] = field.defaultValue !== undefined
+                ? field.defaultValue
+                : defaultValues[type.toLowerCase()];
+
+        if (options.id === name)
+            proto._defaultId = value;
+
+        proto.defaults[originalName !== name ? originalName : name] = value;
+
+        field.parse = field.parse || parsers[type];
+    }
+
+    model = base.extend(proto);
+    model.define = function (options) {
+        return Model.define(model, options);
+    };
+
+    if (proto.fields) {
+        model.fields = proto.fields;
+        model.idField = proto.idField;
+    }
+
+    return model;
+};
+
+module.exports = Model;
+
+function sync(action, ctx, options){
+    var map = {
+        read:     'GET',
+        create:   'POST',
+        update:   'PUT',
+        'delete': 'DELETE'
+    }
+
+    return $.ajax(_.extend({
+        url: _.result(ctx, 'url'),
+        data: ctx.toJSON(),
+        type: map[action] || 'GET'
+    }, options))
+}
+
