@@ -20,3 +20,25 @@
 .tab-content {
     margin-top: 30px;
 }
+
+.radio-range {
+    text-align: center;
+}
+
+.radio-range td{
+    padding: 0 10px;
+}
+
+/*.radio-range td:nth-child(odd){
+    background-color: #e8e8e8;
+}*/
+.radio-range label{
+    color: #5d96c7;
+    margin: 0 auto;
+}
+
+.form-action {
+    margin-top: 40px;
+    background-color: lightgray;
+    padding: 20px;
+}

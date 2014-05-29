@@ -1,9 +1,10 @@
 
 var _ = require('lodash')
-  , Epoxy = require('backbone.epoxy')
+  , Model = require('../models/client/model')
   , Diary = require('./diary')
   , View = require('./view');
 
+var Handlebars = require('hbsfy/runtime')
 
 module.exports = View.extend({
 
@@ -11,7 +12,7 @@ module.exports = View.extend({
 
     template: require('../../views/diary.hbs'),
 
-    model: Epoxy.Model.extend({
+    model: Model.extend({
         urlRoot: '/api/diary'    
     }),
 

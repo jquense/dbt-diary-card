@@ -1,7 +1,6 @@
 
-var dal = require("./define")
-  , moment = require('moment')
-  , diary, specify, beforeAfter;
+var _ = require('lodash')
+  , Model = require('backbone')
 
 specify = { 
 	times: { type: Number, "default": 0 },
@@ -14,11 +13,10 @@ beforeAfter = {
 };
 
 diary = new dal.Schema({ 
-    submitted: { type: Boolean, default: false },
+    submitted: Boolean,
 
     date: { 
-        type: Date,
-        unique: true, 
+        type: Date, 
         set: function(date){
             var d = moment(date);
 
@@ -63,7 +61,7 @@ diary = new dal.Schema({
 
 });
 
-//diary.index({ week: 1, year: -1 }, {unique: true})
+diary.index({ week: 1, year: -1 }, {unique: true})
 
 diary.virtual('firstOfWeek').get(function () {
     return moment(this.date).startOf('week').toDate()

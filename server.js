@@ -23,9 +23,6 @@ require('./src/routes')(app)
 mongoose.connect("mongodb://localhost/dbtDiary")
 
 mongoose.connection
-    .on('open', function(){
-        
-    })
-
+    .on('open', function(){})
 
 app.listen(80)

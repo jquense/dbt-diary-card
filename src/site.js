@@ -1,14 +1,21 @@
 
 var Index = require('./views/index')
+  , Promise = require('bluebird')
+  , Backbone = require('backbone')
+  , ajax = $.ajax;
 
-require('backbone').$ = $
+Backbone.$ = $
+Backbone.ajax = function () {
+    var xhr = ajax.apply($, arguments)
 
-require('./helpers')
-require('./partials')
+    return Promise.cast(xhr).cancellable()
+        .catch(Promise.CancellationError, function (err) { xhr.abort(); throw err })
+};
+
 require('./bindings')
 
 $(function(){
     var index = new Index()
-
+     
     index.fetch();
 })

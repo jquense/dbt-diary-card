@@ -18,20 +18,30 @@ Handlebars.registerHelper('bind-to', function(field, options){
     return new Handlebars.SafeString(out);
 })
 
-Handlebars.registerHelper('oneToFive', function(name, value, options){
-    var out = '';
+Handlebars.registerHelper('radio-range', function(amount, field, options){
+    var inputs = '', labels = ''
+      , name = _.uniqueId(field + '_');
 
-    _.each(_.range(6), function(number){
-        out += format('<label class="%s"><input name="%s" type="radio" value="%d" %s></label>'
-            , options.classes || "radio-inline"
-            , name
-            , number
-            , (value || 0) === number ? 'checked="checked"' : '');
+    _.each(_.range(amount), function(number){
+        inputs += format('<td><input type="radio" %s="%s" name="%s" value="%d"></td>'
+            , kendo.attr('bind')
+            , 'checked: ' + field
+            , name, number) 
+
+        labels += format('<td><label class="%s">&nbsp;%s&nbsp;</label></td>'
+            , options.classes || ""
+            , number) 
     })
 
-    return new Handlebars.SafeString(out);
+    return new Handlebars.SafeString('<table class="radio-range"><tr>' + inputs + '</tr><tr>'+ labels + '</tr></table>');
 })
  
+
+Handlebars.registerHelper('view', function(field, template){
+    var templ = require(template);
+
+    console.log(template);
+})
 
 function parseValue(ctx, string){
     var parts = string.split(/[[\]]{1,2}/)

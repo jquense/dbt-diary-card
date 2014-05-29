@@ -26,20 +26,30 @@ module.exports = function(app){
             })
     })
 
-    app.post('/api/diary', function(req, res){
-        var model = new Diary(req.body)
-          , data = _.omit(model.toObject(), '_id');
-        
-        Diary.findOneAndUpdate(
-              { week: model.week, year: model.year }
-            , data, { upsert: true }
-            , function(err, arg ){
-                if (err) return next(err)
+    app.get('/api/diary/:id', function (req, res, next){
+        Diary.findById(req.params.id, function(err, diary){
+            if ( err) return next(err)
 
-                res.json(arg)
-            })
+            res.json(diary.toJSON())
+        })
     })
 
+
+    app.post('/api/diary', save)
+    app.put('/api/diary/:id', save)
+        function save(req, res, next){
+            var model = new Diary(req.body)
+              , data = _.omit(model.toObject(), '_id');
+        
+            Diary.findOneAndUpdate(
+                  { date: model.date }
+                , data, { upsert: true }
+                , function(err, arg ){
+                    if (err) return next(err)
+
+                    res.json(arg)
+                })
+        }
 
     app.get('*', function (req, res){
         res.render('index', {layout: false})    

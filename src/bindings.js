@@ -1,49 +1,101 @@
 var _ = require('lodash')
   , moment = require('moment')
   , Backbone = require('backbone')
-  , Binding = require('backbone.epoxy').binding;
+  , Binder = kendo.data.Binder
+  , binders = kendo.data.binders
+  , ObservableArray = kendo.data.ObservableArray;
 
 
-Binding.addFilter('dateFormat', function (date, format) {
-    return moment(date).format(format || 'MMM dd');
 
-})
 
-Binding.addHandler("value", {
+  binders['with'] = Binder.extend({
+        init: function(element, bindings, options) {
+            Binder.fn.init.call(this, element, bindings, options);
 
-    init: function ($element, value, bindings, context) {
-        this.widget = kendo.widgetInstance($element);
-        this.options = this.widget && this.widget.options;
-    },
+            var source = this.bindings['with'].get();
+        },
 
-    get: function ($element, value, event) {
-        return this.widget
-            ? this.widget.value()
-            : $element.val();
-    },
+        refresh: function(e) {
+            var self = this
+              , source = self.bindings.source.get();
 
-    set: function ($element, value) {
-        var val = this.widget ? this.widget.value() : $element.val();
+            if (source instanceof ObservableArray) {
+                e = e || {};
 
-        if (_.isEqual(val, value))
-            return
+                if (e.action == "add") 
+                    self.add(e.index, e.items);
+                else if (e.action == "remove") 
+                    self.remove(e.index, e.items);
+                else if (e.action != "itemchange")
+                    self.render();
+                
+            } else 
+                self.render();            
+        },
 
-        if (this.widget) {
-            var field = this.options.dataValueField || this.options.dataTextField;
+        add: function(index, items) {
+            var element = this.container(),
+                parents,
+                idx,
+                length,
+                child,
+                clone = element.cloneNode(false),
+                reference = element.children[index];
 
-            if (value === undefined) value = null;
+            $(clone).html(kendo.render(this.template(), items));
 
-            if (field) {
-                if (_.isArray(value) && _.isPlainObject(value[0]))
-                    value = _.pluck(value, field);
-                else if (_.isPlainObject(value))
-                    value = value[field];
+            if (clone.children.length) {
+                parents = this.bindings.source._parents();
+
+                for (idx = 0, length = items.length; idx < length; idx++) {
+                    child = clone.children[0];
+                    element.insertBefore(child, reference || null);
+                    bindElement(child, items[idx], this.options.roles, [items[idx]].concat(parents));
+                }
+            }
+        },
+
+        remove: function(index, items) {
+            var idx, element = this.container();
+
+            for (idx = 0; idx < items.length; idx++) {
+                var child = element.children[index];
+                unbindElementTree(child);
+                element.removeChild(child);
+            }
+        },
+
+        render: function() {
+            var source = this.bindings.source.get(),
+                parents,
+                idx,
+                length,
+                element = this.container(),
+                template = this.template();
+
+            if (source instanceof kendo.data.DataSource) {
+                source = source.view();
             }
 
-            this.widget.value(value)
+            if (!(source instanceof ObservableArray) && toString.call(source) !== "[object Array]") {
+                source = [source];
+            }
 
-        } else 
-            $element.val(value);
-    }
-})
+            if (this.bindings.template) {
+                unbindElementChildren(element);
 
+                $(element).html(this.bindings.template.render(source));
+
+                if (element.children.length) {
+                    parents = this.bindings.source._parents();
+
+                    for (idx = 0, length = source.length; idx < length; idx++) {
+                        bindElement(element.children[idx], source[idx], this.options.roles, [source[idx]].concat(parents));
+                    }
+                }
+            }
+            else {
+                $(element).html(kendo.render(template, source));
+            }
+        }
+    });

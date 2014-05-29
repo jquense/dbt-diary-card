@@ -1,12 +1,12 @@
 "use strict"
 var _ = require('lodash')
   , Backbone = require('backbone')
-  , Epoxy = require('backbone.epoxy')
+  , Model = require('../models/client/model')
   , viewOptions = [ 'template', 'el', 'id', 'attributes', 'className', 'tagName', 'events'
       ,'viewModel', 'bindings', 'bindingFilters', 'bindingHandlers', 'bindingSources', 'computeds' ];
 
 
-module.exports = Epoxy.View.extend({
+module.exports = Backbone.View.extend({
 
     constructor: function(options){
         this.cid = _.uniqueId('view')
@@ -15,7 +15,7 @@ module.exports = Epoxy.View.extend({
 
         _.extend(this, _.pick(options, viewOptions))
 
-        this.model      = createModel(this.model, options.model, Epoxy.Model)
+        this.model      = createModel(this.model, options.model, Model)
         this.collection = createModel(this.collection, options.collection, Backbone.Collection)
 
         this._ensureElement()
@@ -35,13 +35,17 @@ module.exports = Epoxy.View.extend({
             .then(function (data) {
                 self.render()
             })
-            .always(function () {
+            .finally(function () {
                 kendo.ui.progress(self.$el, false)
             })
     },
 
     _data: function(){
         return this.model.toJSON();    
+    },
+
+    applyBindings: function(){
+        kendo.bind(this.$el, this.model.attributes)
     },
 
     render: function (data) {
