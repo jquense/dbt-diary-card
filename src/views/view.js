@@ -2,8 +2,8 @@
 var _ = require('lodash')
   , Backbone = require('backbone')
   , Model = require('../models/client/model')
-  , viewOptions = [ 'template', 'el', 'id', 'attributes', 'className', 'tagName', 'events'
-      ,'viewModel', 'bindings', 'bindingFilters', 'bindingHandlers', 'bindingSources', 'computeds' ];
+  , ViewModel = require('../models/client/view-model')
+  , viewOptions = [ 'template', 'el', 'id', 'attributes', 'className', 'tagName', 'events' ];
 
 
 module.exports = Backbone.View.extend({
@@ -41,11 +41,12 @@ module.exports = Backbone.View.extend({
     },
 
     _data: function(){
-        return this.model.toJSON();    
+        return this.model.toJSON()   
     },
 
     applyBindings: function(){
-        kendo.bind(this.$el, this.model.attributes)
+        kendo.unbind(this.$el)
+        kendo.bind(this.$el, this.model)
     },
 
     render: function (data) {
@@ -54,8 +55,6 @@ module.exports = Backbone.View.extend({
         self.destroy()
         self.bound = true 
         self.$el.html(self.template(self._data()))
-
-        kendo.init(self.$el);
 
         self.applyBindings();
         

@@ -159,10 +159,10 @@
 
         <button type="button" 
                 class="btn btn-primary btn-submit"
-                data-bind="invisible: submitted, text: submitText"></button>
+                data-bind="visible: needsSubmit, text: submitText">hi</button>
         <button type="button" 
                 class="btn btn-primary btn-unsubmit"
-                data-bind="visible: submitted">Unsubmit and continue working</button>
+                data-bind="invisible: needsSubmit">Unsubmit</button>
       </div>
     </div>
 </form>

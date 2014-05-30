@@ -1,17 +1,19 @@
 
 var _ = require('lodash')
+  , Model = require('../models/client/diary-form')
   , View = require('./view');
 
 module.exports = View.extend({
 
-    model: require('../models/client/model').extend({
-        idAttribute: '_id',
-        urlRoot: 'api/diary',
-        defaults: {
-            submitText: function(){
-                this._model 
-            }
-        }   
+    model: Model.extend({
+              
+        set: function(field, value){
+
+            self.model.set('needsSubmit', !self.model.get('submitted') || self.model.get('submitted') && self.model.get('dirty'))
+            self.model.set('submitText', self.model.get('submitted') && self.model.get('dirty') 
+                ? 'Resubmit'
+                : 'Submit')
+        }
     }),
 
     template: require('../../views/diaryForm.hbs'),
@@ -42,8 +44,10 @@ module.exports = View.extend({
     },
 
     submit: function(e){
+        this._preventChange = true;
         this.model.set('submitted', true)
-        this.save(e)       
+        this.save(e)  
+        this._preventChange = false;     
     },
 
     unsubmit: function(e){
@@ -54,8 +58,10 @@ module.exports = View.extend({
     ready: function () {
         var self = this;
 
-        this.model.on('change', function () {
-            self.model.set('submitted', false)
-        })
+        self.model.on('change', computed)
+        computed();
+        function computed(){
+            
+        }
     }
 });

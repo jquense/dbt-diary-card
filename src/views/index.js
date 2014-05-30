@@ -1,6 +1,5 @@
 
 var _ = require('lodash')
-  , Model = require('../models/client/model')
   , Diary = require('./diary')
   , View = require('./view');
 
@@ -12,9 +11,7 @@ module.exports = View.extend({
 
     template: require('../../views/diary.hbs'),
 
-    model: Model.extend({
-        urlRoot: '/api/diary'    
-    }),
+    model: require('../models/client/diary-form'),
 
     ready: function () {
         var self = this;
@@ -34,19 +31,20 @@ module.exports = View.extend({
 
     _days: function () {
         var self = this
-          , days = self.model.get('diaries');
+          , days = self.model.get('diaries').toJSON();
 
         self.days = self.$el
             .find('.tab-content > .tab-pane')
             .map(function(idx){
                 var day = new Diary({
-                    el: $(this),
-                    model: days[idx]   
-                });
-
+                        el: $(this),
+                        model: days[idx]
+                    });
                 day.render()
-
-                return day
+                return day.model
+                    .on('change:submitted', function(e){
+                        self.model.get('diaries')[0].set('submitted', this.get('submitted'))
+                    });
             })
             .get()
     }
