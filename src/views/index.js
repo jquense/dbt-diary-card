@@ -11,7 +11,13 @@ module.exports = View.extend({
 
     template: require('../../views/diary.hbs'),
 
-    model: require('../models/client/diary-form'),
+    model: require('../models/client/model').extend({
+        urlRoot: '/api/diary', 
+        fields: {
+            week: 'date',
+            diaries: [ require('../models/client/diary-form') ]
+        }    
+    }),
 
     ready: function () {
         var self = this;

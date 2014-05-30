@@ -6,13 +6,10 @@ var _ = require('lodash')
 module.exports = View.extend({
 
     model: Model.extend({
-              
-        set: function(field, value){
-
-            self.model.set('needsSubmit', !self.model.get('submitted') || self.model.get('submitted') && self.model.get('dirty'))
-            self.model.set('submitText', self.model.get('submitted') && self.model.get('dirty') 
-                ? 'Resubmit'
-                : 'Submit')
+          
+        fields: {
+            submitText:  { type: 'string',  virtual: true },
+            needsSubmit: { type: 'boolean', virtual: true }
         }
     }),
 
@@ -35,24 +32,32 @@ module.exports = View.extend({
             })     
     },
 
-    _data: function(){
-        var submitted = this.model.get('submitted')
+    //_data: function(){
+    //    var submitted = this.model.get('submitted')
 
-        return _.extend(this.model.toJSON(), {
-            submitText: submitted && this.model.dirty ? 'Resubmit' : 'Submit'  
-        })
-    },
+    //    return _.extend(this.model.toJSON(), {
+    //        submitText: 
+    //    })
+    //},
 
     submit: function(e){
-        this._preventChange = true;
+        var self = this;
+
         this.model.set('submitted', true)
-        this.save(e)  
-        this._preventChange = false;     
+
+        this.save(e)
+            .then(function(){
+                self.model.set('needsSubmit', false)
+            }) 
     },
 
     unsubmit: function(e){
+        var self = this;
+
         this.model.set('submitted', false)
-        this.save(e)
+        this.save(e).then(function(){
+            self.model.set('needsSubmit', true)
+        })
     },
 
     ready: function () {
@@ -61,6 +66,13 @@ module.exports = View.extend({
         self.model.on('change', computed)
         computed();
         function computed(){
+            var submitted = self.model.get('submitted');
+
+            self.model.set('needsSubmit'
+                , !submitted || submitted && self.model.dirty  )
+
+            self.model.set('submitText'
+                , submitted && self.model.dirty ? 'Resubmit' : 'Submit'  )
             
         }
     }

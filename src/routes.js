@@ -20,7 +20,7 @@ module.exports = function(app){
                 var diaries = fillDiaries(start, models);
 
                 res.json({
-                    week: start.format('MMM DD'),
+                    week: start.toDate(),
                     diaries: diaries
                 });
             })

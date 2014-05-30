@@ -15,8 +15,20 @@ Model.extend = Backbone.Model.extend;
 function Model(data) {
     var self = this;
 
-    BaseModel.fn.init.call(this, data)
     fields(this);
+
+    data = _.extend({}, self.defaults, data);
+
+    kendo.data.ObservableObject.fn.init.call(self, data);
+
+    self.dirty = false;
+     
+    if (self.idField) {
+        self.id = self.get(self.idField);
+
+        if (self.id === undefined) 
+            self.id = self._defaultId;
+    }
 }
 
 _.extend(Model.prototype , {
@@ -26,37 +38,55 @@ _.extend(Model.prototype , {
     fields: {},
     defaults: {},
 
-    shouldSerialize: function (field) {
-        return BaseModel.fn.shouldSerialize.call(this, field)
-            && field !== 'url'
-            && field !== 'urlRoot'
+    shouldSerialize: function (name) {
+
+        return BaseModel.fn.shouldSerialize.call(this, name)
+            && !this.isVirtual(name)
+            && name !== 'url'
+            && name !== 'urlRoot'
     },
    
-    set: function(key, val){
+    isVirtual: function(field){
+        field = (this.fields || {})[field];
+        return (field|| {}).virtual;
+    },
+
+    set: function(key, val, initiator){
         var self = this
           , attrs;
 
-        if (typeof key === 'object') 
+        if (typeof key === 'object') {
             attrs = key
+            initiator = val;
+        }    
         else 
             (attrs = {})[key] = val
          
-        _.each(attrs, function(val, field){
-             BaseModel.fn.set.call(self, field, val)
-             self.trigger('change:' + field)
+        _.each(attrs, function(value, field){
+
+            if (self.editable(field)) {
+                value = self._parse(field, value);
+
+                if (!_.isEqual(value, self.get(field))) {
+                    if( !self.isVirtual(field) ) self.dirty = true;
+
+                    kendo.data.ObservableObject.fn.set.call(self, field, value, initiator);
+                    self.trigger('change:' + field)
+                }
+            }
         })
 
         return this
     },
 
     clear: function(options) {
-      var attrs = {};
+        var attrs = {};
 
-      for (var key in this.toJSON()) 
-          delete this[key];
+        for (var key in this.toJSON()) 
+            delete this[key];
 
-      this.id = this.get(this.idField);
-
+        this.id = this.get(this.idField);
+        return this
     },
 
     url: function() {
@@ -127,25 +157,30 @@ _.extend(Model.prototype , {
     },
 
     accept: function(data) {
-            var that = this,
-                parent = function() { return that; },
-                field;
+        var self = this
+          , wasDirty = self.dirty
+          , parent = function() { return self; }
+          , field;
 
-            _.each(data, function(value, field){
-                value = that._parse(field, value);
+        _.each(data, function(value, field){
+            value = self._parse(field, value);
 
-                if (field.charAt(0) != "_")
-                    value = that.wrap(value, field, parent);
+            if (field.charAt(0) != "_")
+                value = self.wrap(value, field, parent);
                 
-                that._set(field, value);
-            })
+            self._set(field, value);
+        })
                 
 
-            if (that.idField)
-                that.id = that.get(that.idField);
+        if (self.idField)
+            self.id = self.get(self.idField);
 
-            that.dirty = false;
-        },
+        self.dirty = false;
+
+        ////to trigger stuff looking at dirty
+        //if (self.wasDirty)
+        //    self.trigger('change', { action: 'accept' })        
+    },
 
     on: function(){
         this.bind.apply(this, arguments)    
@@ -170,24 +205,22 @@ function urlError() {
 };
 
 function fields(ctx){
-    var type, value, originalName, field
-      , defaultValues = {
-        "string": "",
-        "number": 0,
-        "date": new Date(),
-        "boolean": false,
-        "default": ""
-    };
+    var value, type, originalName, field;
 
     for (name in ctx.fields) {
         field = ctx.fields[name];
         value = null;
         originalName = name;
 
-        type = typeof type === 'string' 
-            ? field.type || 'default'
-            : 'default';
+        field = ctx.fields[name] = _.isPlainObject(field)
+            ? field
+            : { type: field }            
 
+        type = field.type;
+
+        if ( typeof field.type !== 'string' )
+            field.type = null;   
+        
         name = typeof (field.field) === 'string' 
             ? field.field 
             : name
@@ -196,32 +229,58 @@ function fields(ctx){
             value = ctx.defaults[originalName !== name ? originalName : name] 
                 = field.defaultValue !== undefined 
                     ? field.defaultValue 
-                    : defaultValues[type.toLowerCase()]
+                    : defaults(type)
         }
 
         if (ctx.idField === name) ctx._defaultId = value
         
         ctx.defaults[originalName !== name ? originalName : name] = value
-        field.parse = getParser(field)
+        field.parse = getParser(field, type)
     }
 }
 
-function getParser(field){
-    var parsers = require('./parsers')
-      , type = field.type
-      , parser = field.parse || parsers[field.type || 'default']
+function getParser(field, type){
+    var primitives = require('./primitives')
+      , nested = _.isArray(type)
+      , parser = field.parse || primitives.parsers[type]
+      , t;
 
-    if (_.isArray(type) || typeof type === 'function') {
-        parser = function(data){
-            return _.isArray(type) 
-                ? _.map(data, parseArray) 
-                : new type(data)   
-        }
+    if ( nested)
+        type = type.length ? type[0] : Array 
+
+    t = primitives.types[type] || type
+    
+    if (parser) return parser
+
+    return function(data){
+        return nested
+            ? _.map(data, parseArray) 
+            : clean(new t(data))  
     }
-
-    return parser;
-
+    
     function parseArray(d){ 
-        return new type[0](d) 
+        return clean(new t(d))
     }
+}
+
+var toString = Object.prototype.toString;
+
+function defaults(type){
+    var primitives = require('./primitives').types; 
+
+    if ( _.isArray(type) ) 
+        return [];
+
+    type = primitives[type] || type || String;
+
+    return clean(new type())
+}
+
+function clean(inst){
+    var primitives = [ '[object Boolean]', '[object Number]', '[object String]' ];
+
+    if( _.contains(primitives, toString.call(inst)) )
+        inst = inst.valueOf();
+
+    return inst
 }
