@@ -151,9 +151,9 @@ _.extend(Model.prototype , {
         if (options.data == null && model && (action === 'create' || action === 'update' || action === 'patch')) {
             params.contentType = 'application/json'
             params.data = JSON.stringify(model.toJSON())
-        }
+        } 
 
-        return Backbone.ajax(params)
+        return Backbone.ajax(_.extend(params, options))
     },
 
     accept: function(data) {

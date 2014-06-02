@@ -18,7 +18,7 @@ app.use(require('serve-static')(__dirname + '/public'))
 app.use(require('body-parser')())
 app.set('view engine', 'hbs')
 
-require('./src/routes')(app)
+require('./src/routing/routes')(app)
 
 mongoose.connect("mongodb://localhost/dbtDiary")
 

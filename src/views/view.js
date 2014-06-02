@@ -31,9 +31,9 @@ module.exports = Backbone.View.extend({
 
         kendo.ui.progress(self.$el, true)
 
-        return this.model.fetch()
+        return this.model.fetch(options)
             .then(function (data) {
-                self.render()
+                return self.render()
             })
             .finally(function () {
                 kendo.ui.progress(self.$el, false)

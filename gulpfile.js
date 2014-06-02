@@ -1,10 +1,11 @@
 var gulp = require('gulp')
+  , less = require('gulp-less')
   , source = require('vinyl-source-stream')
   , browserify = require('browserify')
   , bootstrap = require('./bootstrap/build')
   , fs = require('fs');
 
-gulp.task('jquery', function(){
+gulp.task('copy', function(){
     gulp.src([
         'node_modules/jquery/dist/jquery.min.js',
         'node_modules/lodash/lodash.js',
@@ -14,6 +15,12 @@ gulp.task('jquery', function(){
 });
 
 gulp.task('bootstrap', bootstrap);
+
+gulp.task('less', function(){
+    gulp.src('./styles/*.less')
+        .pipe(less())
+        .pipe(gulp.dest('./public/css'));
+});
 
 gulp.task('templates', function(){
     var bundle = browserify({ debug: true })
@@ -54,8 +61,9 @@ gulp.task('build', function(){
 });
 
 gulp.task('watch', function() {
-  gulp.watch('./src/**/*', ['build']);
-  gulp.watch([
+    gulp.watch('./styles/**/*.less', ['less']);
+    gulp.watch('./src/**/*', ['build']);
+    gulp.watch([
         './views/**/*.hbs'
       , './src/partials.js'
       , './src/helpers.js'], ['templates']);
@@ -63,4 +71,4 @@ gulp.task('watch', function() {
 
 // Default Task
 gulp.task('browserify', ['templates', 'build']);
-gulp.task('default', ['jquery', 'bootstrap', 'browserify']);
+gulp.task('default', ['copy', 'bootstrap', 'browserify']);

@@ -10448,11 +10448,391 @@ module.exports = require("handlebars/runtime")["default"];
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],16:[function(require,module,exports){
+/**
+ * Object#toString() ref for stringify().
+ */
+
+var toString = Object.prototype.toString;
+
+/**
+ * Object#hasOwnProperty ref
+ */
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+/**
+ * Array#indexOf shim.
+ */
+
+var indexOf = typeof Array.prototype.indexOf === 'function'
+  ? function(arr, el) { return arr.indexOf(el); }
+  : function(arr, el) {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] === el) return i;
+      }
+      return -1;
+    };
+
+/**
+ * Array.isArray shim.
+ */
+
+var isArray = Array.isArray || function(arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+/**
+ * Object.keys shim.
+ */
+
+var objectKeys = Object.keys || function(obj) {
+  var ret = [];
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      ret.push(key);
+    }
+  }
+  return ret;
+};
+
+/**
+ * Array#forEach shim.
+ */
+
+var forEach = typeof Array.prototype.forEach === 'function'
+  ? function(arr, fn) { return arr.forEach(fn); }
+  : function(arr, fn) {
+      for (var i = 0; i < arr.length; i++) fn(arr[i]);
+    };
+
+/**
+ * Array#reduce shim.
+ */
+
+var reduce = function(arr, fn, initial) {
+  if (typeof arr.reduce === 'function') return arr.reduce(fn, initial);
+  var res = initial;
+  for (var i = 0; i < arr.length; i++) res = fn(res, arr[i]);
+  return res;
+};
+
+/**
+ * Cache non-integer test regexp.
+ */
+
+var isint = /^[0-9]+$/;
+
+function promote(parent, key) {
+  if (parent[key].length == 0) return parent[key] = {}
+  var t = {};
+  for (var i in parent[key]) {
+    if (hasOwnProperty.call(parent[key], i)) {
+      t[i] = parent[key][i];
+    }
+  }
+  parent[key] = t;
+  return t;
+}
+
+function parse(parts, parent, key, val) {
+  var part = parts.shift();
+  
+  // illegal
+  if (Object.getOwnPropertyDescriptor(Object.prototype, key)) return;
+  
+  // end
+  if (!part) {
+    if (isArray(parent[key])) {
+      parent[key].push(val);
+    } else if ('object' == typeof parent[key]) {
+      parent[key] = val;
+    } else if ('undefined' == typeof parent[key]) {
+      parent[key] = val;
+    } else {
+      parent[key] = [parent[key], val];
+    }
+    // array
+  } else {
+    var obj = parent[key] = parent[key] || [];
+    if (']' == part) {
+      if (isArray(obj)) {
+        if ('' != val) obj.push(val);
+      } else if ('object' == typeof obj) {
+        obj[objectKeys(obj).length] = val;
+      } else {
+        obj = parent[key] = [parent[key], val];
+      }
+      // prop
+    } else if (~indexOf(part, ']')) {
+      part = part.substr(0, part.length - 1);
+      if (!isint.test(part) && isArray(obj)) obj = promote(parent, key);
+      parse(parts, obj, part, val);
+      // key
+    } else {
+      if (!isint.test(part) && isArray(obj)) obj = promote(parent, key);
+      parse(parts, obj, part, val);
+    }
+  }
+}
+
+/**
+ * Merge parent key/val pair.
+ */
+
+function merge(parent, key, val){
+  if (~indexOf(key, ']')) {
+    var parts = key.split('[')
+      , len = parts.length
+      , last = len - 1;
+    parse(parts, parent, 'base', val);
+    // optimize
+  } else {
+    if (!isint.test(key) && isArray(parent.base)) {
+      var t = {};
+      for (var k in parent.base) t[k] = parent.base[k];
+      parent.base = t;
+    }
+    set(parent.base, key, val);
+  }
+
+  return parent;
+}
+
+/**
+ * Compact sparse arrays.
+ */
+
+function compact(obj) {
+  if ('object' != typeof obj) return obj;
+
+  if (isArray(obj)) {
+    var ret = [];
+
+    for (var i in obj) {
+      if (hasOwnProperty.call(obj, i)) {
+        ret.push(obj[i]);
+      }
+    }
+
+    return ret;
+  }
+
+  for (var key in obj) {
+    obj[key] = compact(obj[key]);
+  }
+
+  return obj;
+}
+
+/**
+ * Parse the given obj.
+ */
+
+function parseObject(obj){
+  var ret = { base: {} };
+
+  forEach(objectKeys(obj), function(name){
+    merge(ret, name, obj[name]);
+  });
+
+  return compact(ret.base);
+}
+
+/**
+ * Parse the given str.
+ */
+
+function parseString(str){
+  var ret = reduce(String(str).split('&'), function(ret, pair){
+    var eql = indexOf(pair, '=')
+      , brace = lastBraceInKey(pair)
+      , key = pair.substr(0, brace || eql)
+      , val = pair.substr(brace || eql, pair.length)
+      , val = val.substr(indexOf(val, '=') + 1, val.length);
+
+    // ?foo
+    if ('' == key) key = pair, val = '';
+    if ('' == key) return ret;
+
+    return merge(ret, decode(key), decode(val));
+  }, { base: {} }).base;
+
+  return compact(ret);
+}
+
+/**
+ * Parse the given query `str` or `obj`, returning an object.
+ *
+ * @param {String} str | {Object} obj
+ * @return {Object}
+ * @api public
+ */
+
+exports.parse = function(str){
+  if (null == str || '' == str) return {};
+  return 'object' == typeof str
+    ? parseObject(str)
+    : parseString(str);
+};
+
+/**
+ * Turn the given `obj` into a query string
+ *
+ * @param {Object} obj
+ * @return {String}
+ * @api public
+ */
+
+var stringify = exports.stringify = function(obj, prefix) {
+  if (isArray(obj)) {
+    return stringifyArray(obj, prefix);
+  } else if ('[object Object]' == toString.call(obj)) {
+    return stringifyObject(obj, prefix);
+  } else if ('string' == typeof obj) {
+    return stringifyString(obj, prefix);
+  } else {
+    return prefix + '=' + encodeURIComponent(String(obj));
+  }
+};
+
+/**
+ * Stringify the given `str`.
+ *
+ * @param {String} str
+ * @param {String} prefix
+ * @return {String}
+ * @api private
+ */
+
+function stringifyString(str, prefix) {
+  if (!prefix) throw new TypeError('stringify expects an object');
+  return prefix + '=' + encodeURIComponent(str);
+}
+
+/**
+ * Stringify the given `arr`.
+ *
+ * @param {Array} arr
+ * @param {String} prefix
+ * @return {String}
+ * @api private
+ */
+
+function stringifyArray(arr, prefix) {
+  var ret = [];
+  if (!prefix) throw new TypeError('stringify expects an object');
+  for (var i = 0; i < arr.length; i++) {
+    ret.push(stringify(arr[i], prefix + '[' + i + ']'));
+  }
+  return ret.join('&');
+}
+
+/**
+ * Stringify the given `obj`.
+ *
+ * @param {Object} obj
+ * @param {String} prefix
+ * @return {String}
+ * @api private
+ */
+
+function stringifyObject(obj, prefix) {
+  var ret = []
+    , keys = objectKeys(obj)
+    , key;
+
+  for (var i = 0, len = keys.length; i < len; ++i) {
+    key = keys[i];
+    if ('' == key) continue;
+    if (null == obj[key]) {
+      ret.push(encodeURIComponent(key) + '=');
+    } else {
+      ret.push(stringify(obj[key], prefix
+        ? prefix + '[' + encodeURIComponent(key) + ']'
+        : encodeURIComponent(key)));
+    }
+  }
+
+  return ret.join('&');
+}
+
+/**
+ * Set `obj`'s `key` to `val` respecting
+ * the weird and wonderful syntax of a qs,
+ * where "foo=bar&foo=baz" becomes an array.
+ *
+ * @param {Object} obj
+ * @param {String} key
+ * @param {String} val
+ * @api private
+ */
+
+function set(obj, key, val) {
+  var v = obj[key];
+  if (Object.getOwnPropertyDescriptor(Object.prototype, key)) return;
+  if (undefined === v) {
+    obj[key] = val;
+  } else if (isArray(v)) {
+    v.push(val);
+  } else {
+    obj[key] = [v, val];
+  }
+}
+
+/**
+ * Locate last brace in `str` within the key.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function lastBraceInKey(str) {
+  var len = str.length
+    , brace
+    , c;
+  for (var i = 0; i < len; ++i) {
+    c = str[i];
+    if (']' == c) brace = false;
+    if ('[' == c) brace = true;
+    if ('=' == c && !brace) return i;
+  }
+}
+
+/**
+ * Decode `str`.
+ *
+ * @param {String} str
+ * @return {String}
+ * @api private
+ */
+
+function decode(str) {
+  try {
+    return decodeURIComponent(str.replace(/\+/g, ' '));
+  } catch (err) {
+    return str;
+  }
+}
+
+},{}],17:[function(require,module,exports){
 var _ = require('lodash')
   , Handlebars = require("hbsfy/runtime")
   , moment = require('moment')
+  , qs = require('qs')
   , format = require('util').format;
 
+
+Handlebars.registerHelper('url', function(url, options){
+    options = _.last(arguments)
+    url = format.apply(null,_.initial(arguments))
+
+    return url + '?' + qs.stringify(options.hash)
+})
+
+Handlebars.registerHelper('format', function(format){
+    return format.apply(null,_.initial(arguments))
+})
 
 Handlebars.registerHelper('dateFormat', function(date, format){
     return moment(date).format(format);
@@ -10505,7 +10885,7 @@ function parseValue(ctx, string){
 
     return ctx
 }
-},{"hbsfy/runtime":"takUR9","lodash":14,"moment":15,"util":4}],17:[function(require,module,exports){
+},{"hbsfy/runtime":"takUR9","lodash":14,"moment":15,"qs":16,"util":4}],18:[function(require,module,exports){
 var _ = require('lodash')
   , Handlebars = require("hbsfy/runtime");
 
@@ -10518,25 +10898,30 @@ var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, self=this, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing;
+  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
 
 function program1(depth0,data) {
   
   var buffer = "", stack1, helper, options;
-  buffer += "\r\n    <li ";
+  buffer += "\r\n        <li data-bind=\"class: {nav-success: diaries["
+    + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "].submitted}\" ";
   stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += ">\r\n      <a href=\"#";
+  buffer += ">\r\n        <a href=\"";
+  stack1 = (helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM-DD-YY", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM-DD-YY", options));
+  buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{
+    'date': (stack1)
+  },data:data},helper ? helper.call(depth0, "/diary", options) : helperMissing.call(depth0, "url", "/diary", options)))
+    + "\" data-url=\"client\" data-target=\"#";
   if (helper = helpers._id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0._id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "\" data-toggle=\"pill\">\r\n        "
-    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), " Do: dddd", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), " Do: dddd", options)))
-    + " \r\n        <i class=\"fa fa-cogs\" data-bind=\"invisible: diaries["
+    + "\" data-toggle=\"pill\">\r\n          "
+    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "Do: dddd", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "Do: dddd", options)))
+    + "\r\n          <i class=\"fa fa-check-circle\" data-bind=\"visible: diaries["
     + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "].submitted\"></i>\r\n        <i class=\"fa fa-check-circle\" data-bind=\"visible: diaries["
-    + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "].submitted\"></i>\r\n      </a>\r\n    </li>\r\n    ";
+    + "].submitted\"></i>\r\n        </a>\r\n        </li>\r\n        ";
   return buffer;
   }
 function program2(depth0,data) {
@@ -10564,19 +10949,17 @@ function program5(depth0,data) {
   return "in active ";
   }
 
-  buffer += "<div class=\"container\">\r\n  <div class=\"navbar navbar-default\">\r\n    <div class=\"navbar-form\">\r\n      <button class=\"btn btn-link\"><< Previous week</button>\r\n      <span class=\"static-text\">Week of the: </span>\r\n      <input class=\"week-picker\"\r\n             data-bind=\"value: week\"\r\n             data-role=\"datepicker\"\r\n             data-format=\"MMM dd\">\r\n      <button class=\"btn btn-link\">Next week >></button>\r\n    </div>\r\n\r\n  </div>\r\n  <ul class=\"nav nav-pills nav-justified\">\r\n    ";
+  buffer += "\r\n  <div class=\"navbar navbar-default\" style=\"margin-bottom: 10px\">\r\n    <div class=\"navbar-form\">\r\n      <button class=\"btn btn-link\">\r\n        << Previous week</button>\r\n      <span class=\"static-text\">Week of the: </span>\r\n      <input class=\"week-picker\"\r\n             data-bind=\"value: firstOfWeek\"\r\n             data-role=\"datepicker\"\r\n             data-format=\"MMM dd\">\r\n        <button class=\"btn btn-link\">Next week >></button>\r\n      </div>\r\n  </div>\r\n\r\n  <div class=\"top-bar\" data-spy=\"affix\" data-offset-top=\"72\">\r\n      <ul class=\"nav nav-pills nav-justified\">\r\n        ";
   stack1 = helpers.each.call(depth0, (depth0 && depth0.diaries), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n  </ul>\r\n  <div class=\"tab-content\">\r\n    ";
+  buffer += "\r\n      </ul>\r\n  </div>\r\n\r\n  <div class=\"tab-content\">\r\n    ";
   stack1 = helpers.each.call(depth0, (depth0 && depth0.diaries), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n  </div>\r\n</div>";
+  buffer += "\r\n  </div>\r\n\r\n  <nav class=\"navbar navbar-default navbar-fixed-bottom container\" role=\"navigation\">\r\n    <div class=\"navbar-form navbar-right\">\r\n      <button class=\"btn btn-primary btn-save\">Save Weekly Diary</button>\r\n    </div>\r\n  </nav>\r\n";
   return buffer;
   });
 
-},{"hbsfy/runtime":"takUR9"}],"./views/diaryForm.hbs":[function(require,module,exports){
-module.exports=require('KCqZM8');
-},{}],"KCqZM8":[function(require,module,exports){
+},{"hbsfy/runtime":"takUR9"}],"KCqZM8":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -10601,7 +10984,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   if (helper = helpers.year) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.year); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "\" name=\"year\"></input>\r\n    <fieldset>\r\n        <legend>Behaviors</legend>\r\n\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Misery</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n              "
+    + "\" name=\"year\"></input>\r\n\r\n    <fieldset>\r\n        <legend>Behaviors</legend>\r\n\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Misery</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n              "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "use", options) : helperMissing.call(depth0, "radio-range", 6, "use", options)))
     + "\r\n            </div>\r\n	      </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Suicide Ideation</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n              "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "suicide", options) : helperMissing.call(depth0, "radio-range", 6, "suicide", options)))
@@ -10655,12 +11038,12 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   },data:data},helper ? helper.call(depth0, "value: illicit.times", options) : helperMissing.call(depth0, "bind-to", "value: illicit.times", options)))
     + "/>\r\n                <span class=\"form-control-static\" > Number of times</span>\r\n                <textarea "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{},data:data},helper ? helper.call(depth0, "value: illicit.specify", options) : helperMissing.call(depth0, "bind-to", "value: illicit.specify", options)))
-    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n    <fieldset>\r\n        <legend>---</legend>\r\n        <div class=\"form-group\">\r\n          <div class=\"checkbox col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3\">\r\n\r\n            <label>\r\n              <input type=\"checkbox\" name=\"causedSelfHarm\" value=\"true\" />Caused self-harm</label>\r\n          </div>\r\n        </div>\r\n        \r\n        <div class=\"form-group \">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Skills</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"0\" data-bind=\"checked: skills\"/>Not thought about or used</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"1\" data-bind=\"checked: skills\"/>Thought about, not used, did not want too</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"2\" data-bind=\"checked: skills\"/>Thought about, not used, wanted to</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"3\" data-bind=\"checked: skills\"/>Tried but could not use them</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"4\" data-bind=\"checked: skills\"/>Tried, could do them, but they didn't help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"5\" data-bind=\"checked: skills\"/>Tried, could use them, helped</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"6\" data-bind=\"checked: skills\"/>Did not try, used them, did not help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"7\" data-bind=\"checked: skills\"/>Did not try, used them, helped</label>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n    <div class=\"form-group form-action\">\r\n      <div class=\"col-sm-offset-3 col-md-offset-2 col-sm-9 col-md-10\">\r\n        <button type=\"button\" class=\"btn btn-default btn-save\" >Save and continue later</button>\r\n\r\n        <label class=\"checkbox-inline\">\r\n          <input type=\"checkbox\" name=\"skills\" data-bind=\"checked: submitted\"/>Complete\r\n        </label>\r\n      </div>\r\n    </div>\r\n</form>";
+    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n    <fieldset>\r\n        <legend>---</legend>\r\n        <div class=\"form-group\">\r\n          <div class=\"col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3\">\r\n            <label class=\"checkbox \">\r\n              <input type=\"checkbox\" name=\"causedSelfHarm\" value=\"true\" />Caused self-harm</label>\r\n          </div>\r\n        </div>\r\n        \r\n        <div class=\"form-group \">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Skills</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"0\" data-bind=\"checked: skills\"/>Not thought about or used</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"1\" data-bind=\"checked: skills\"/>Thought about, not used, did not want too</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"2\" data-bind=\"checked: skills\"/>Thought about, not used, wanted to</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"3\" data-bind=\"checked: skills\"/>Tried but could not use them</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"4\" data-bind=\"checked: skills\"/>Tried, could do them, but they didn't help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"5\" data-bind=\"checked: skills\"/>Tried, could use them, helped</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"6\" data-bind=\"checked: skills\"/>Did not try, used them, did not help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"7\" data-bind=\"checked: skills\"/>Did not try, used them, helped</label>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n    <div class=\"form-group \">\r\n      <div class=\"col-sm-offset-3 col-md-offset-2 col-sm-9 col-md-10\">\r\n        <label class=\"checkbox text-success\">\r\n          <input type=\"checkbox\" name=\"skills\" data-bind=\"checked: submitted\"/>I've finished working on this day.\r\n        </label>\r\n      </div>\r\n    </div>\r\n</form>";
   return buffer;
   });
 
-},{"hbsfy/runtime":"takUR9"}],"./views/index.hbs":[function(require,module,exports){
-module.exports=require('HiBQRG');
+},{"hbsfy/runtime":"takUR9"}],"./views/diaryForm.hbs":[function(require,module,exports){
+module.exports=require('KCqZM8');
 },{}],"HiBQRG":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
@@ -10670,7 +11053,9 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<!DOCTYPE html>\r\n\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n	<script src=\"/scripts/jquery.min.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/lodash.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/bootstrap.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/kendo.ui.core.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/lib.js\" type=\"text/javascript\"></script>\r\n	<script src=\"/scripts/templates.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/site.js\" type=\"text/javascript\"></script>\r\n    \r\n    <link href=\"/css/bootstrap.css\" rel=\"stylesheet\" />\r\n    <link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\r\n    <link href=\"/css/kendo.common-bootstrap.min.css\" rel=\"stylesheet\" />\r\n    <link href=\"/css/kendo.bootstrap.min.css\" rel=\"stylesheet\" />\r\n    <link href=\"/css/site.css\" rel=\"stylesheet\" />\r\n    <meta charset=\"utf-8\" />\r\n    <title>Diary Card</title>\r\n</head>\r\n<body>\r\n</body>\r\n</html>";
+  return "<!DOCTYPE html>\r\n\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n	<script src=\"/scripts/jquery.min.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/lodash.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/bootstrap.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/kendo.ui.core.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/lib.js\" type=\"text/javascript\"></script>\r\n	<script src=\"/scripts/templates.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/site.js\" type=\"text/javascript\"></script>\r\n    \r\n    <link href=\"/css/bootstrap.css\" rel=\"stylesheet\" />\r\n    <link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\r\n    <link href=\"/css/kendo.common-bootstrap.min.css\" rel=\"stylesheet\" />\r\n    <link href=\"/css/kendo.bootstrap.min.css\" rel=\"stylesheet\" />\r\n    <link href=\"/css/site.css\" rel=\"stylesheet\" />\r\n    <meta charset=\"utf-8\" />\r\n    <title>Diary Card</title>\r\n</head>\r\n<body class=\"container\">\r\n</body>\r\n</html>";
   });
 
-},{"hbsfy/runtime":"takUR9"}]},{},["takUR9",16,17])
+},{"hbsfy/runtime":"takUR9"}],"./views/index.hbs":[function(require,module,exports){
+module.exports=require('HiBQRG');
+},{}]},{},["takUR9",17,18])

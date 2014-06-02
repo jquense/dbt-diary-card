@@ -1,30 +1,38 @@
-<div class="container">
-  <div class="navbar navbar-default">
+
+  <div class="navbar navbar-default" style="margin-bottom: 10px">
     <div class="navbar-form">
-      <button class="btn btn-link"><< Previous week</button>
+      <button class="btn btn-link">
+        << Previous week</button>
       <span class="static-text">Week of the: </span>
       <input class="week-picker"
-             data-bind="value: week"
+             data-bind="value: firstOfWeek"
              data-role="datepicker"
              data-format="MMM dd">
-      <button class="btn btn-link">Next week >></button>
-    </div>
-
+        <button class="btn btn-link">Next week >></button>
+      </div>
   </div>
-  <ul class="nav nav-pills nav-justified">
-    {{#each diaries}}
-    <li {{#unless @index}}class="active"{{/unless}}>
-      <a href="#{{ _id }}" data-toggle="pill">
-        {{dateFormat date ' Do: dddd'}} 
-        <i class="fa fa-cogs" data-bind="invisible: diaries[{{@index}}].submitted"></i>
-        <i class="fa fa-check-circle" data-bind="visible: diaries[{{@index}}].submitted"></i>
-      </a>
-    </li>
-    {{/each}}
-  </ul>
+
+  <div class="top-bar" data-spy="affix" data-offset-top="72">
+      <ul class="nav nav-pills nav-justified">
+        {{#each diaries}}
+        <li data-bind="class: {nav-success: diaries[{{@index}}].submitted}" {{#unless @index}}class="active"{{/unless}}>
+        <a href="{{url '/diary' date=(dateFormat date 'MMM-DD-YY') }}" data-url="client" data-target="#{{ _id }}" data-toggle="pill">
+          {{dateFormat date 'Do: dddd'}}
+          <i class="fa fa-check-circle" data-bind="visible: diaries[{{@index}}].submitted"></i>
+        </a>
+        </li>
+        {{/each}}
+      </ul>
+  </div>
+
   <div class="tab-content">
     {{#each diaries}}
       <div class="tab-pane fade {{#unless @index}}in active {{/unless}}" id="{{ _id }}"></div>
     {{/each}}
   </div>
-</div>
+
+  <nav class="navbar navbar-default navbar-fixed-bottom container" role="navigation">
+    <div class="navbar-form navbar-right">
+      <button class="btn btn-primary btn-save">Save Weekly Diary</button>
+    </div>
+  </nav>

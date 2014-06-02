@@ -1,8 +1,20 @@
 var _ = require('lodash')
   , Handlebars = require("hbsfy/runtime")
   , moment = require('moment')
+  , qs = require('qs')
   , format = require('util').format;
 
+
+Handlebars.registerHelper('url', function(url, options){
+    options = _.last(arguments)
+    url = format.apply(null,_.initial(arguments))
+
+    return url + '?' + qs.stringify(options.hash)
+})
+
+Handlebars.registerHelper('format', function(format){
+    return format.apply(null,_.initial(arguments))
+})
 
 Handlebars.registerHelper('dateFormat', function(date, format){
     return moment(date).format(format);

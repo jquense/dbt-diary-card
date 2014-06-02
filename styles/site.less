@@ -1,0 +1,106 @@
+﻿@import "../bootstrap/less/variables";
+@import "../bootstrap/less/mixins";
+
+body { 
+    padding-bottom: 70px; 
+}
+
+.top-bar {
+    background-color: white;
+    z-index: @zindex-navbar;
+    border-bottom: 1px solid @legend-border-color;
+    padding: 10px 0;
+
+    &.affix {
+        top: 0;
+        background: @navbar-default-bg;
+        transition: background .25s ease-in-out;
+        -moz-transition: background .25s ease-in-out;
+        -webkit-transition: background .25s ease-in-out;
+        
+
+        + div {
+            margin-top: 111px;
+        }
+
+        @media (min-width: @screen-sm-min) {
+            width: @container-sm - @grid-gutter-width;
+        }
+
+        @media (min-width: @screen-md-min) {
+            width: @container-md - @grid-gutter-width;
+        }
+
+        @media (min-width: @screen-lg-min) {
+            width: @container-lg - @grid-gutter-width;
+        }
+    }
+}
+
+
+.radio-header {
+    display: inline-block;
+    width: 17px;
+    font-weight: bold;
+
+    & + .radio-header{
+        margin-left: 10px
+    }
+}
+
+.form-occurances {
+    width: 65px;
+    display: inline-block;
+}
+
+.input-padding {
+    margin-top: 5px;
+}
+
+.tab-content {
+    margin-top: 30px;
+}
+
+.radio-range {
+    text-align: center;
+
+    td {
+        padding: 0 10px;
+    }
+
+    label{
+        color: lighten(@brand-primary, 10%);
+        margin: 0 auto;
+    }
+}
+
+.form-action {
+    margin-top: 40px;
+    background-color: @gray-lighter;
+    padding: 20px;
+    border-radius: @border-radius-base
+}
+
+
+.pill-variant(@color, @active-color: @nav-pills-active-link-hover-color) {
+    > a {
+        color: @color;
+    }
+
+    &.active > a {
+        color: @active-color;
+        background-color: @color;
+    }
+}
+
+.nav-pills li {
+    &.nav-success{
+        .pill-variant(@btn-success-bg)
+    }
+    &.nav-warning{
+        .pill-variant(@btn-warning-bg)
+    }
+    &.nav-danger{
+        .pill-variant(@btn-danger-bg)
+    }
+}

@@ -1,6 +1,6 @@
 var _ = require('lodash')
   , moment = require('moment')
-  , Diary = require('./models/diary')
+  , Diary = require('../models/diary')
   , format = require('util').format;
 
  
@@ -8,19 +8,19 @@ module.exports = function(app){
 
     
     app.get('/api/diary', function (req, res, next){
-        var start = req.query.week || new Date()
-          , end;
+        var start = req.query.date || new Date()
+          , week;
 
-        start = moment(start).startOf('week');
+        week = moment(start).startOf('week');
 
-        Diary.find({ week: start.week(), year: start.year() }
+        Diary.find({ week: week.week(), year: week.year() }
             , function(err, models){
                 if (err) return next(err)
 
-                var diaries = fillDiaries(start, models);
+                var diaries = fillDiaries(week, models);
 
                 res.json({
-                    week: start.toDate(),
+                    date: moment(start).toDate(),
                     diaries: diaries
                 });
             })

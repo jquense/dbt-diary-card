@@ -6,7 +6,25 @@ var _ = require('lodash')
   , ObservableArray = kendo.data.ObservableArray;
 
 
+    binders['class'] = Binder.extend({
+        init: function (target, bindings, options) {
+            Binder.fn.init.call(this, target, bindings, options);
 
+            this._lookups = _.pairs(this.bindings.class.path)
+        },
+        refresh: function(key) {
+            var self = this
+              , element = $(this.element);
+
+            _.each(this._lookups, function(pair){
+                self.bindings.class.path = pair[1];
+
+                value = self.bindings.class.get();
+
+                element.toggleClass(pair[0], !!value);
+            })   
+        }
+    })
 
   binders['with'] = Binder.extend({
         init: function(element, bindings, options) {
