@@ -1,0 +1,13 @@
+<div>
+  <header>
+    <strong>{{~dateFormat date 'MMM DD' ~}}</strong>
+  </header>
+  <div>
+    {{~#each days ~}}
+      <a href="{{url '/diary' date=(dateFormat date 'MMM-DD-YY') }}" 
+         class="btn {{#unless started}}btn-warning{{else}}btn-default{{/unless}}">
+        {{~dateFormat date 'ddd Do'~}}
+      </a>
+    {{~/each~}}
+  </div>
+</div>

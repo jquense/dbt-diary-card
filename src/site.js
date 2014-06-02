@@ -1,6 +1,7 @@
 /*global $*/
 var Router = require('./routing/client/router')
   , Index = require('./views/diary')
+  , Overview = require('./views/overview')
   , Promise = require('bluebird')
   , Backbone = require('backbone')
   , moment = require('moment')
@@ -17,16 +18,40 @@ Backbone.ajax = function () {
 require('./bindings')
 
 $(function(){
-    var index = new Index()
+    var current
       , router = new Router({
             routes: {
-                'diary(/)': 'diary'    
+                'diary(/)': 'diary',
+                'overview' : 'overview'   
             }
         })
      
-    router.on('route:diary', function(query){
-        index.changeWeek(moment(query.date, 'MMM-DD-YY').toDate() || new Date());
-    })
+    router
+        .on('route:diary', function(query){
+            var view = current;
+
+            if (!(view instanceof Index)) {
+                view && view.remove()
+                view = new Index()
+            }
+
+            view.changeWeek(query.date 
+                ? moment(query.date, 'MMM-DD-YY').toDate() 
+                : new Date());
+
+            current = view
+        })
+        .on('route:overview', function(query){
+            var view = current;
+
+            if (!(view instanceof Overview)) {
+                view && view.remove()
+                view = new Overview()
+            }
+
+            view.fetch()
+            current = view
+        })
 
     Backbone.history.start({ pushState: true })
 })

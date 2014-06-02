@@ -5990,3 +5990,78 @@ td.visible-print {
     display: none !important;
   }
 }
+.navbar-toolbar {
+  padding: 0 15px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+@media (min-width: 768px) {
+  .navbar-toolbar .form-group {
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+  }
+  .navbar-toolbar .form-control {
+    display: inline-block;
+  }
+  .navbar-toolbar .radio,
+  .navbar-toolbar .checkbox {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+  }
+  .navbar-toolbar .radio input[type="radio"],
+  .navbar-toolbar .checkbox input[type="checkbox"] {
+    float: none;
+    margin-left: 0;
+  }
+}
+@media (max-width: 767px) {
+  .navbar-toolbar .form-group {
+    margin-bottom: 5px;
+  }
+}
+.container > .navbar-toolbar {
+  padding: 0;
+}
+/*!
+ * Copyright 2013 Twitter, Inc.
+ * This work is licensed under the Creative Commons Attribution 3.0 Unported License.
+ * You should have received a copy of this license along with this work.
+ * If not, visit http://creativecommons.org/licenses/by/3.0/ .
+ */
+.callout {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-left: 3px solid #eeeeee;
+  border-radius: 0;
+}
+.callout h4 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+.callout p:last-child {
+  margin-bottom: 0;
+}
+.callout-danger {
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
+.callout-danger h4 {
+  color: #b94a48;
+}
+.callout-warning {
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+}
+.callout-warning h4 {
+  color: #c09853;
+}
+.callout-info {
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+.callout-info h4 {
+  color: #3a87ad;
+}

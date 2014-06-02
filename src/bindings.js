@@ -6,6 +6,30 @@ var _ = require('lodash')
   , ObservableArray = kendo.data.ObservableArray;
 
 
+
+    binders.widget.max = Binder.extend({
+        init: function (widget, bindings, options) {
+            kendo.data.Binder.fn.init.call(this, widget.element[0], bindings, options);
+        },
+        refresh: function () {
+            var that = this,
+            value = that.bindings.max.get(); //get the value from the View-Model
+
+            kendo.widgetInstance($(that.element)).max(value); //update the widget
+        }
+    });
+
+    binders.widget.min = Binder.extend({
+        init: function (widget, bindings, options) {
+            Binder.fn.init.call(this, widget.element[0], bindings, options);
+        },
+        refresh: function () {
+            var that = this,
+            value = that.bindings.min.get(); //get the value from the View-Model
+            kendo.widgetInstance($(that.element)).min(value); //update the widget
+        }
+    });
+
     binders['class'] = Binder.extend({
         init: function (target, bindings, options) {
             Binder.fn.init.call(this, target, bindings, options);

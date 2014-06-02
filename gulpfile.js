@@ -71,4 +71,4 @@ gulp.task('watch', function() {
 
 // Default Task
 gulp.task('browserify', ['templates', 'build']);
-gulp.task('default', ['copy', 'bootstrap', 'browserify']);
+gulp.task('default', ['copy', 'bootstrap', 'browserify', 'less']);

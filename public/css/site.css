@@ -3,34 +3,30 @@ body {
 }
 .top-bar {
   background-color: white;
-  z-index: 1000;
-  border-bottom: 1px solid #e5e5e5;
   padding: 10px 0;
+  z-index: 1000;
 }
 .top-bar.affix {
   top: 0;
+  width: 100%;
   background: #f8f8f8;
-  transition: background 0.25s ease-in-out;
-  -moz-transition: background 0.25s ease-in-out;
+  border-bottom: 1px solid #e5e5e5;
   -webkit-transition: background 0.25s ease-in-out;
+  transition: background 0.25s ease-in-out;
+  /*@media (min-width: @screen-sm-min) {
+            width: @container-sm;
+        }
+
+        @media (min-width: @screen-md-min) {
+            width: @container-md;
+        }
+
+        @media (min-width: @screen-lg-min) {
+            width: @container-lg;
+        }*/
 }
 .top-bar.affix + div {
-  margin-top: 111px;
-}
-@media (min-width: 768px) {
-  .top-bar.affix {
-    width: 720px;
-  }
-}
-@media (min-width: 992px) {
-  .top-bar.affix {
-    width: 940px;
-  }
-}
-@media (min-width: 1200px) {
-  .top-bar.affix {
-    width: 1140px;
-  }
+  margin-top: 81px;
 }
 .radio-header {
   display: inline-block;

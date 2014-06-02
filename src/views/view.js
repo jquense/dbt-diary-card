@@ -2,7 +2,6 @@
 var _ = require('lodash')
   , Backbone = require('backbone')
   , Model = require('../models/client/model')
-  , ViewModel = require('../models/client/view-model')
   , viewOptions = [ 'template', 'el', 'id', 'attributes', 'className', 'tagName', 'events' ];
 
 
@@ -25,13 +24,14 @@ module.exports = Backbone.View.extend({
     },
 
     fetch: function (options) {
-        var self = this;
+        var self = this
+          , bound = this.model || this.collection;
 
         options || (options = {})
 
         kendo.ui.progress(self.$el, true)
 
-        return this.model.fetch(options)
+        return bound.fetch(options)
             .then(function (data) {
                 return self.render()
             })
@@ -41,12 +41,25 @@ module.exports = Backbone.View.extend({
     },
 
     _data: function(){
-        return this.model.toJSON()   
+        var bound = this.model || this.collection
+
+        return bound && bound.toJSON() || {}
+    },
+
+    readonly: function(enable){
+        this.$(':input:not(.k-input, [type=checkbox], [type=radio])').prop('readonly', !enable)
+        this.$('input[type=radio], input[type=checkbox]').not('.k-input').prop('disabled', !enable)
+
+        this.$('.k-input:input[data-role]').each(function(){
+            var widget = kendo.widgetInstance($(this))
+
+            widget && widget.readonly && widget.readonly(!enable)
+        })
     },
 
     applyBindings: function(){
         kendo.unbind(this.$el)
-        kendo.bind(this.$el, this.model)
+        kendo.bind(this.$el, this.model || this.collection)
     },
 
     render: function (data) {

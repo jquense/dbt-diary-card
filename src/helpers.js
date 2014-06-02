@@ -5,6 +5,42 @@ var _ = require('lodash')
   , format = require('util').format;
 
 
+function isArray(arr) {
+    var rslt = _.isArray(arr);
+
+    if (arr && arr.length !== undefined && !rslt && arr instanceof kendo.data.ObservableArray)
+        rslt = true;
+
+    return rslt;
+}
+
+Handlebars.registerHelper( 'each', function ( context, options ) {
+    var fn = options.fn, 
+        inverse = options.inverse,
+        i = null,
+        ret = "", 
+        data;
+
+    if ( typeof context === "function" ) 
+        context = context.call( this );
+    
+    if ( options.data ) 
+        data = Handlebars.createFrame( options.data );
+    
+    var prop = isArray(context) ? "index" : "key";
+
+    _.each( context, function (item, idx) {
+        if ( data ) data[prop] = i = idx;
+        
+        ret = ret + fn( item, { data: data } );
+    })
+
+    if ( i === null ) 
+        ret = inverse( this );
+    
+    return ret;
+});
+
 Handlebars.registerHelper('url', function(url, options){
     options = _.last(arguments)
     url = format.apply(null,_.initial(arguments))

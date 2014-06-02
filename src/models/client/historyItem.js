@@ -46,10 +46,6 @@ _.extend(Model.prototype , {
             && name !== 'urlRoot'
     },
    
-    isNew: function() {
-        return !this.id;
-    },
-
     isVirtual: function(field){
         field = (this.fields || {})[field];
         return (field|| {}).virtual;

@@ -1,72 +1,46 @@
-
+"use strict";
 var dal = require("./define")
+  , Day = require('./day')
+  //, Mongoose = require('mongoose')
   , moment = require('moment')
-  , diary, specify, beforeAfter;
+  , _ = require('lodash')
+  , diary;
 
-specify = { 
-	times: { type: Number, "default": 0 },
-    specify: String
-};
-
-beforeAfter = { 
-	before: { type: Number, min: 0, max: 5 },
-    after:  { type: Number, min: 0, max: 5 },
-};
-
-diary = new dal.Schema({ 
-    submitted: { type: Boolean, default: false },
+diary = new dal.Schema({
 
     date: { 
         type: Date,
+        default: new Date(),
         unique: true, 
-        set: function(date){
-            var d = moment(date);
-
-            this.dayOfWeek  = d.day();
-            this.week       = d.week();
-            this.year       = d.year();
-            return date;
-        }
     },
 
-    dayOfWeek:  Number,
-    week: Number,
-    year: Number,
-    
+    submitted: { type: Boolean, deault: false },
+    started: { type: Boolean, deault: false },
 
-	use:      { type: Number, min: 0, max: 5, default: 0 },
-    suicide:  { type: Number, min: 0, max: 5, default: 0 },
-    selfHarm: { type: Number, min: 0, max: 5, default: 0 },
-    pain:     { type: Number, min: 0, max: 5, default: 0 },
-    sadness:  { type: Number, min: 0, max: 5, default: 0 },
-    shame:    { type: Number, min: 0, max: 5, default: 0 },
-    anger:    { type: Number, min: 0, max: 5, default: 0 },
-    fear:     { type: Number, min: 0, max: 5, default: 0 },
+    days: { 
+        type: [ Day.schema ],
 
-    urgeToUse:  beforeAfter,
-    urgeToQuit: beforeAfter,
-    urgeToHarm: beforeAfter,
+        get: function(value){
+            if (!value) return value;
+            return expandDays(this.date, value)
+        } 
+    }
+}, {  id: false, toJSON: { getters: true }, toObject: { getters: true } });
 
-    beliefInEmotions:  beforeAfter,
-    beliefInBehaviors: beforeAfter,
-    beliefInThoughts:  beforeAfter,
-
-    illicit: specify,
-    otc: specify,
-    prescription: specify,
-    alcohol: specify,
-
-    causedSelfHarm: Boolean,
-    lying: Number,
-    joy:    { type: Number, min: 0, max: 5, default: 0 },
-    skills: { type: Number, min: 0, max: 7, default: 0 }
-
-});
-
-//diary.index({ week: 1, year: -1 }, {unique: true})
-
-diary.virtual('firstOfWeek').get(function () {
-    return moment(this.date).startOf('week').toDate()
-});
+//diary.index({ week: 1, year: -1 }, { unique: true })
 
 module.exports = dal.define('Diary', 'diaries', diary)
+
+function expandDays(date, models){
+    date = moment(date)
+
+    return _.map(_.range(1,8), function(){
+        var model = _.find(models, function(m){
+            return date.isSame(m.date, 'date');
+        }) || new Day({ _id: null, date: date.toDate() });
+
+        date = date.clone().add('d', 1);
+
+        return model; 
+    })
+}

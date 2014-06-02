@@ -10823,6 +10823,42 @@ var _ = require('lodash')
   , format = require('util').format;
 
 
+function isArray(arr) {
+    var rslt = _.isArray(arr);
+
+    if (arr && arr.length !== undefined && !rslt && arr instanceof kendo.data.ObservableArray)
+        rslt = true;
+
+    return rslt;
+}
+
+Handlebars.registerHelper( 'each', function ( context, options ) {
+    var fn = options.fn, 
+        inverse = options.inverse,
+        i = null,
+        ret = "", 
+        data;
+
+    if ( typeof context === "function" ) 
+        context = context.call( this );
+    
+    if ( options.data ) 
+        data = Handlebars.createFrame( options.data );
+    
+    var prop = isArray(context) ? "index" : "key";
+
+    _.each( context, function (item, idx) {
+        if ( data ) data[prop] = i = idx;
+        
+        ret = ret + fn( item, { data: data } );
+    })
+
+    if ( i === null ) 
+        ret = inverse( this );
+    
+    return ret;
+});
+
 Handlebars.registerHelper('url', function(url, options){
     options = _.last(arguments)
     url = format.apply(null,_.initial(arguments))
@@ -10890,7 +10926,9 @@ var _ = require('lodash')
   , Handlebars = require("hbsfy/runtime");
 
 //Handlebars.registerPartial('diaryForm', require('../views/partials/diaryForm.hbs'))
-},{"hbsfy/runtime":"takUR9","lodash":14}],"./views/diary.hbs":[function(require,module,exports){
+
+Handlebars.registerPartial('historyItem', require('../views/partials/historyItem.hbs'))
+},{"../views/partials/historyItem.hbs":27,"hbsfy/runtime":"takUR9","lodash":14}],"./views/diary.hbs":[function(require,module,exports){
 module.exports=require('ZeV20W');
 },{}],"ZeV20W":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -10898,30 +10936,24 @@ var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this, helperMissing=helpers.helperMissing;
+  var buffer = "", stack1, self=this, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
 
 function program1(depth0,data) {
   
   var buffer = "", stack1, helper, options;
-  buffer += "\r\n        <li data-bind=\"class: {nav-success: diaries["
-    + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "].submitted}\" ";
+  buffer += "\r\n          <li data-bind=\"class: { nav-success: submitted }\" ";
   stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += ">\r\n        <a href=\"";
+  buffer += " >\r\n          <a href=\"";
   stack1 = (helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM-DD-YY", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM-DD-YY", options));
   buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{
     'date': (stack1)
   },data:data},helper ? helper.call(depth0, "/diary", options) : helperMissing.call(depth0, "url", "/diary", options)))
-    + "\" data-url=\"client\" data-target=\"#";
-  if (helper = helpers._id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0._id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "\" data-toggle=\"pill\">\r\n          "
-    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "Do: dddd", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "Do: dddd", options)))
-    + "\r\n          <i class=\"fa fa-check-circle\" data-bind=\"visible: diaries["
+    + "\" \r\n              data-url=\"client\" \r\n              data-target=\"#day_"
     + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "].submitted\"></i>\r\n        </a>\r\n        </li>\r\n        ";
+    + "\" \r\n              data-toggle=\"pill\">\r\n            "
+    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "Do: dddd", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "Do: dddd", options)))
+    + "\r\n          </a>\r\n          </li>\r\n          ";
   return buffer;
   }
 function program2(depth0,data) {
@@ -10932,14 +10964,12 @@ function program2(depth0,data) {
 
 function program4(depth0,data) {
   
-  var buffer = "", stack1, helper;
-  buffer += "\r\n      <div class=\"tab-pane fade ";
+  var buffer = "", stack1;
+  buffer += "\r\n    <div class=\"tab-pane fade ";
   stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\" id=\"";
-  if (helper = helpers._id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0._id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
+  buffer += "\" id=\"day_"
+    + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\"></div>\r\n    ";
   return buffer;
   }
@@ -10949,13 +10979,13 @@ function program5(depth0,data) {
   return "in active ";
   }
 
-  buffer += "\r\n  <div class=\"navbar navbar-default\" style=\"margin-bottom: 10px\">\r\n    <div class=\"navbar-form\">\r\n      <button class=\"btn btn-link\">\r\n        << Previous week</button>\r\n      <span class=\"static-text\">Week of the: </span>\r\n      <input class=\"week-picker\"\r\n             data-bind=\"value: firstOfWeek\"\r\n             data-role=\"datepicker\"\r\n             data-format=\"MMM dd\">\r\n        <button class=\"btn btn-link\">Next week >></button>\r\n      </div>\r\n  </div>\r\n\r\n  <div class=\"top-bar\" data-spy=\"affix\" data-offset-top=\"72\">\r\n      <ul class=\"nav nav-pills nav-justified\">\r\n        ";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.diaries), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  buffer += "\r\n  <div class=\"navbar navbar-default navbar-static-top\" style=\"margin-bottom: 10px\">\r\n    <div class=\"container\">\r\n      <div class=\"navbar-toolbar\">\r\n        <span class=\"static-text\">Week of the: </span>\r\n        <input class=\"week-picker\"\r\n               data-bind=\"value: firstOfWeek, max: endOfWeek\"\r\n               data-role=\"datepicker\"\r\n               data-format=\"MMM dd\">\r\n        </div>\r\n    </div> \r\n  </div>\r\n\r\n<div class=\"top-bar\" data-spy=\"affix\" data-offset-top=\"62\">\r\n  <div class=\"container\">\r\n        <ul class=\"nav nav-pills nav-justified\">\r\n          ";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n      </ul>\r\n  </div>\r\n\r\n  <div class=\"tab-content\">\r\n    ";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.diaries), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
+  buffer += "\r\n        </ul>\r\n    </div>\r\n</div>\r\n<div class=\"pg-main container\">\r\n  <div class=\"callout callout-info\" data-bind=\"visible: submitted\">This Diary has already been submitted so you cannot change it</div>\r\n  <div class=\"tab-content\">\r\n    ";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n  </div>\r\n\r\n  <nav class=\"navbar navbar-default navbar-fixed-bottom container\" role=\"navigation\">\r\n    <div class=\"navbar-form navbar-right\">\r\n      <button class=\"btn btn-primary btn-save\">Save Weekly Diary</button>\r\n    </div>\r\n  </nav>\r\n";
+  buffer += "\r\n  </div>\r\n</div>\r\n\r\n\r\n\r\n<nav class=\"navbar navbar-default navbar-fixed-bottom\" role=\"navigation\">\r\n  <div class=\"container\">\r\n    <div class=\"navbar-toolbar navbar-right\">\r\n      <button class=\"btn btn-default btn-save\"   data-bind=\"invisible: submitted\">Save Weekly Diary</button>\r\n      <button class=\"btn btn-primary btn-submit\" data-bind=\"invisible: submitted\">Submit Diary</button>\r\n      <button class=\"btn btn-primary btn-unsubmit\" data-bind=\"visible: submitted\">Unsubmit</button>\r\n    </div>\r\n  </div>\r\n</nav>\r\n";
   return buffer;
   });
 
@@ -11053,9 +11083,81 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   
 
 
-  return "<!DOCTYPE html>\r\n\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n	<script src=\"/scripts/jquery.min.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/lodash.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/bootstrap.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/kendo.ui.core.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/lib.js\" type=\"text/javascript\"></script>\r\n	<script src=\"/scripts/templates.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/site.js\" type=\"text/javascript\"></script>\r\n    \r\n    <link href=\"/css/bootstrap.css\" rel=\"stylesheet\" />\r\n    <link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\r\n    <link href=\"/css/kendo.common-bootstrap.min.css\" rel=\"stylesheet\" />\r\n    <link href=\"/css/kendo.bootstrap.min.css\" rel=\"stylesheet\" />\r\n    <link href=\"/css/site.css\" rel=\"stylesheet\" />\r\n    <meta charset=\"utf-8\" />\r\n    <title>Diary Card</title>\r\n</head>\r\n<body class=\"container\">\r\n</body>\r\n</html>";
+  return "<!DOCTYPE html>\r\n\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n	<script src=\"/scripts/jquery.min.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/lodash.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/bootstrap.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/kendo.ui.core.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/lib.js\" type=\"text/javascript\"></script>\r\n	<script src=\"/scripts/templates.js\" type=\"text/javascript\"></script>\r\n    <script src=\"/scripts/site.js\" type=\"text/javascript\"></script>\r\n    \r\n    <link href=\"/css/bootstrap.css\" rel=\"stylesheet\" />\r\n    <link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\r\n    <link href=\"/css/kendo.common-bootstrap.min.css\" rel=\"stylesheet\" />\r\n    <link href=\"/css/kendo.bootstrap.min.css\" rel=\"stylesheet\" />\r\n    <link href=\"/css/site.css\" rel=\"stylesheet\" />\r\n    <meta charset=\"utf-8\" />\r\n    <title>Diary Card</title>\r\n</head>\r\n<body></body>\r\n</html>";
   });
 
 },{"hbsfy/runtime":"takUR9"}],"./views/index.hbs":[function(require,module,exports){
 module.exports=require('HiBQRG');
-},{}]},{},["takUR9",17,18])
+},{}],"./views/overview.hbs":[function(require,module,exports){
+module.exports=require('K3yFmH');
+},{}],"K3yFmH":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var Handlebars = require('hbsfy/runtime');
+module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); partials = this.merge(partials, Handlebars.partials); data = data || {};
+  var buffer = "", stack1, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "\r\n      ";
+  stack1 = self.invokePartial(partials.historyItem, 'historyItem', depth0, helpers, partials, data);
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n    ";
+  return buffer;
+  }
+
+  buffer += "\r\n  <div class=\"navbar navbar-default\" style=\"margin-bottom: 10px\">\r\n      <div class=\"navbar-header\">\r\n        <span class=\"navbar-brand\">Welcome</span>\r\n      </div>\r\n  </div>\r\n  <div class=\"tab-content\">\r\n    ";
+  stack1 = helpers.each.call(depth0, depth0, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n  </div>";
+  return buffer;
+  });
+
+},{"hbsfy/runtime":"takUR9"}],27:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var Handlebars = require('hbsfy/runtime');
+module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, helper, options;
+  buffer += "<a href=\"";
+  stack1 = (helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM-DD-YY", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM-DD-YY", options));
+  buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{
+    'date': (stack1)
+  },data:data},helper ? helper.call(depth0, "/diary", options) : helperMissing.call(depth0, "url", "/diary", options)))
+    + "\" \r\n         class=\"btn ";
+  stack1 = helpers.unless.call(depth0, (depth0 && depth0.started), {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\">"
+    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "ddd Do", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "ddd Do", options)))
+    + "</a>";
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  
+  return "btn-warning";
+  }
+
+function program4(depth0,data) {
+  
+  
+  return "btn-default";
+  }
+
+  buffer += "<div>\r\n  <header>\r\n    <strong>"
+    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM DD", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM DD", options)))
+    + "</strong>\r\n  </header>\r\n  <div>";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</div>\r\n</div>\r\n";
+  return buffer;
+  });
+
+},{"hbsfy/runtime":"takUR9"}]},{},["takUR9",17,18])

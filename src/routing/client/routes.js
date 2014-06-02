@@ -5,6 +5,7 @@ var _ = require('lodash')
 module.exports = Backbone.Router.extend({
     
     routes: {
-      'diary' : 'diary'
+      'diary' : 'diary',
+      'overview' : 'overview'
     }
 })

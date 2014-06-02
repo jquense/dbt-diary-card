@@ -15,28 +15,12 @@ module.exports = View.extend({
 
     template: require('../../views/diary.hbs'),
 
-    model: require('../models/client/model').extend({
-        urlRoot: '/api/diary',
-
-        week: function(){
-            return moment(this.get('date')).week()
-        },
-
-        firstOfWeek: function(){
-            return moment(this.get('date'))
-                .startOf('week')
-                .toDate()
-        },
-
-        fields: {
-            date: 'date',
-            diaries: [ require('../models/client/diary-form') ]
-        }    
-    }),
+    model: require('../models/client/diary'),
 
     events: {
         'click .btn-save': 'save', 
-   //     'click a[data-toggle=pill]': '_tabs'
+        'click .btn-submit': 'submit',
+        'click .btn-unsubmit': 'unsubmit' 
     },
 
     ready: function () {
@@ -47,7 +31,9 @@ module.exports = View.extend({
         this.weekpicker = this.$el.find('input.week-picker')
             .getKendoDatePicker()
             .bind('change', function () {
-                Backbone.history.navigate('/diary?date=' + moment(this.value()).format('MMM-DD-YY'), true)
+                var date = moment(this.value())
+
+                Backbone.history.navigate('/diary?date=' + date.format('MMM-DD-YY'), true)
             }) 
     },
 
@@ -56,61 +42,56 @@ module.exports = View.extend({
 
         $btn.button('loading')
 
-        return Promise.map(this.days, function(day){
-            return day.model.dirty && day.model.save()    
-        }).finally(function(){
-            $btn.button('reset')    
-        }) 
+        return this.model.save()
+            .finally(function(){
+                $btn.button('reset')    
+            }) 
+    },
+
+    submit: function(e){
+        var self = this;
+        
+        if ( _.all(this.model.get('days'), 'started') ) {
+            this.model.set('submitted', true)
+            this.save(e)
+        } else 
+            dialog.alert({ 
+                title: 'Missing information',
+                message: 'You can\'t submit a diary until you\'ve filled out every day.',
+            })
+    },
+
+    unsubmit: function(e){
+        var self = this;
+
+        this.model.set('submitted', false)
     },
 
     changeWeek: function (date) {
         var self = this
-          , week = moment(date).week();
+          , firstOfWeek = moment(date).startOf('week');
 
-        if ( !this.bound || this.model.week() !== week )
+        date = moment(date);
+
+        if ( !this.bound || !firstOfWeek.isSame(this.model.get('date'), 'date') )
             if( _.any(this.days, function(d){ return d.model.dirty }))
                 self.warn().then(function(cont){
                     if (cont) get()
                 })
             else
                 get();
+        else
+            select()
 
         function get(){
-            self.fetch({ data: { date: date} })
-                .then(function(){
-                    var idx = _.findIndex(self.model.get('diaries'), function(d){ return moment(d.date).isSame(date)});
-
-                    if (~idx) self.$('a[data-toggle=pill]:eq(' + idx +')').tab('show');
-                })
-        }
-    },
-
-    _tabs: function (e) {
-        var self = this
-          , tab = self.$('.nav-pills li.active a')
-          , idx = $(tab).parent().index()
-          , day = this.days[idx];
-
-        if(tab[0] === e.target) return false;
-
-        if ( day.model.dirty && !self._preventCheck ) {
-            e.preventDefault()
-            e.stopPropagation()
-
-            return dialog.confirm({ 
-                    message: 'You have unsaved changes.',
-                    confirm: { label: 'Continue without saving', classes: 'btn btn-link'},
-                    cancel: { label: 'Stay on page', classes: 'btn btn-primary'} 
-                })
-                .then(function(accepted){
-                    if( accepted )  {
-                         self._preventCheck = true
-                         $(e.target).tab('show')
-                    }  
-                })
+            self.model.set('date', firstOfWeek.toDate());
+            self.fetch().then(select)
         }
 
-        self._preventCheck = false
+        function select(){
+            var idx = _.findIndex(self.model.get('days'), function(d){ return date.isSame(d.date) });
+            if (~idx) self.$('a[data-toggle=pill]:eq(' + idx +')').tab('show');
+        }
     },
 
     warn: function(){
@@ -125,23 +106,23 @@ module.exports = View.extend({
 
     _days: function () {
         var self = this
-          , days = self.model.get('diaries').toJSON();
+          , days = self.model.get('days').toJSON();
 
         self.days = self.$el
-        .find('.tab-content > .tab-pane')
+            .find('.tab-content > .tab-pane')
             .map(function(idx){
                 var day = new Day({
                     el: $(this),
                     model: days[idx]
                 });
 
-                day.render()
-
                 day.model
-                    .on('change:submitted', function(e){
-                        self.model.get('diaries')[idx].set('submitted', this.get('submitted'))
-                    });
+                    .on('change', function(e){
 
+                        self.model.get('days')[idx].set(e.field, this.get(e.field))
+                    })
+
+                day.render()
                 return day;
             })
             .get()
