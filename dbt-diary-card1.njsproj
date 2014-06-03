@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{85d3423b-731f-4c46-8ad9-3da3d628a7b7}</ProjectGuid>
+    <ProjectHome />
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>server.js</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="bootstrap\less\extensions.less" />
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Compile Include="gulpfile.js" />
+    <Compile Include="server.js" />
+    <Content Include="bootstrap\package.json" />
+    <Compile Include="bootstrap\build.js" />
+    <Compile Include="src\bindings.js" />
+    <Compile Include="src\helpers.js" />
+    <Compile Include="src\models\client\historyItem.js" />
+    <Compile Include="src\models\diary.js" />
+    <Compile Include="src\partials.js" />
+    <Compile Include="src\site.js" />
+    <Content Include="styles\site.css" />
+    <Content Include="styles\site.min.css" />
+    <Compile Include="bootstrap\js\affix.js" />
+    <Compile Include="bootstrap\js\alert.js" />
+    <Compile Include="bootstrap\js\button.js" />
+    <Compile Include="bootstrap\js\carousel.js" />
+    <Compile Include="bootstrap\js\collapse.js" />
+    <Compile Include="bootstrap\js\dropdown.js" />
+    <Compile Include="bootstrap\js\modal.js" />
+    <Compile Include="bootstrap\js\popover.js" />
+    <Compile Include="bootstrap\js\scrollspy.js" />
+    <Compile Include="bootstrap\js\tab.js" />
+    <Compile Include="bootstrap\js\tooltip.js" />
+    <Compile Include="bootstrap\js\transition.js" />
+    <Content Include="bootstrap\js\tests\index.html" />
+    <Compile Include="bootstrap\js\tests\unit\affix.js" />
+    <Compile Include="bootstrap\js\tests\unit\alert.js" />
+    <Compile Include="bootstrap\js\tests\unit\button.js" />
+    <Compile Include="bootstrap\js\tests\unit\carousel.js" />
+    <Compile Include="bootstrap\js\tests\unit\collapse.js" />
+    <Compile Include="bootstrap\js\tests\unit\dropdown.js" />
+    <Compile Include="bootstrap\js\tests\unit\modal.js" />
+    <Compile Include="bootstrap\js\tests\unit\phantom.js" />
+    <Compile Include="bootstrap\js\tests\unit\popover.js" />
+    <Compile Include="bootstrap\js\tests\unit\scrollspy.js" />
+    <Compile Include="bootstrap\js\tests\unit\tab.js" />
+    <Compile Include="bootstrap\js\tests\unit\tooltip.js" />
+    <Compile Include="bootstrap\js\tests\unit\transition.js" />
+    <Content Include="bootstrap\js\tests\vendor\qunit.css" />
+    <Compile Include="bootstrap\js\tests\vendor\jquery.js" />
+    <Compile Include="bootstrap\js\tests\vendor\qunit.js" />
+    <Content Include="public\css\bootstrap.css" />
+    <Content Include="public\css\kendo.bootstrap.min.css" />
+    <Content Include="public\css\kendo.common-bootstrap.core.min.css" />
+    <Content Include="public\css\kendo.common-bootstrap.min.css" />
+    <Content Include="public\css\site.css" />
+    <Compile Include="public\scripts\.site.js" />
+    <Compile Include="public\scripts\bootstrap.js" />
+    <Compile Include="public\scripts\bootstrap.min.js" />
+    <Compile Include="public\scripts\jquery.min.js" />
+    <Compile Include="public\scripts\kendo.ui.core.js" />
+    <Compile Include="public\scripts\kendo.ui.core.min.js" />
+    <Compile Include="public\scripts\lib.js" />
+    <Compile Include="public\scripts\lodash.js" />
+    <Compile Include="public\scripts\site.js" />
+    <Compile Include="public\scripts\templates.js" />
+    <Content Include="public\css\Bootstrap\editor.png" />
+    <Content Include="public\css\Bootstrap\imagebrowser.png" />
+    <Content Include="public\css\Bootstrap\sprite.png" />
+    <Content Include="public\css\Bootstrap\sprite_2x.png" />
+    <Content Include="public\css\Bootstrap\indeterminate.gif" />
+    <Content Include="public\css\Bootstrap\loading-image.gif" />
+    <Content Include="public\css\Bootstrap\loading.gif" />
+    <Content Include="public\css\Bootstrap\loading_2x.gif" />
+    <Content Include="public\css\Bootstrap\slider-h.gif" />
+    <Content Include="public\css\Bootstrap\slider-v.gif" />
+    <Compile Include="src\lib\dialog.js" />
+    <Compile Include="src\lib\util.js" />
+    <Compile Include="src\models\define.js" />
+    <Compile Include="src\models\day.js" />
+    <Compile Include="src\routing\routes.js" />
+    <Compile Include="src\views\day.js" />
+    <Compile Include="src\views\overview.js" />
+    <Compile Include="src\views\diary.js" />
+    <Compile Include="src\views\view.js" />
+    <Compile Include="src\models\client\diary-form.js" />
+    <Compile Include="src\models\client\model.js" />
+    <Compile Include="src\models\client\primitives.js" />
+    <Compile Include="src\models\client\diary.js" />
+    <Compile Include="src\routing\client\router.js" />
+    <Compile Include="src\routing\client\routes.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".git" />
+    <Folder Include=".git\branches" />
+    <Folder Include=".git\hooks" />
+    <Folder Include=".git\info" />
+    <Folder Include=".git\logs" />
+    <Folder Include=".git\logs\refs" />
+    <Folder Include=".git\logs\refs\heads" />
+    <Folder Include=".git\logs\refs\remotes" />
+    <Folder Include=".git\logs\refs\remotes\origin" />
+    <Folder Include=".git\objects" />
+    <Folder Include=".git\objects\01" />
+    <Folder Include=".git\objects\08" />
+    <Folder Include=".git\objects\0a" />
+    <Folder Include=".git\objects\0d" />
+    <Folder Include=".git\objects\13" />
+    <Folder Include=".git\objects\15" />
+    <Folder Include=".git\objects\16" />
+    <Folder Include=".git\objects\18" />
+    <Folder Include=".git\objects\19" />
+    <Folder Include=".git\objects\1b" />
+    <Folder Include=".git\objects\1c" />
+    <Folder Include=".git\objects\1e" />
+    <Folder Include=".git\objects\1f" />
+    <Folder Include=".git\objects\20" />
+    <Folder Include=".git\objects\22" />
+    <Folder Include=".git\objects\23" />
+    <Folder Include=".git\objects\24" />
+    <Folder Include=".git\objects\25" />
+    <Folder Include=".git\objects\26" />
+    <Folder Include=".git\objects\27" />
+    <Folder Include=".git\objects\28" />
+    <Folder Include=".git\objects\29" />
+    <Folder Include=".git\objects\2b" />
+    <Folder Include=".git\objects\2c" />
+    <Folder Include=".git\objects\2d" />
+    <Folder Include=".git\objects\2f" />
+    <Folder Include=".git\objects\30" />
+    <Folder Include=".git\objects\33" />
+    <Folder Include=".git\objects\34" />
+    <Folder Include=".git\objects\35" />
+    <Folder Include=".git\objects\36" />
+    <Folder Include=".git\objects\3f" />
+    <Folder Include=".git\objects\40" />
+    <Folder Include=".git\objects\42" />
+    <Folder Include=".git\objects\49" />
+    <Folder Include=".git\objects\4a" />
+    <Folder Include=".git\objects\50" />
+    <Folder Include=".git\objects\51" />
+    <Folder Include=".git\objects\56" />
+    <Folder Include=".git\objects\57" />
+    <Folder Include=".git\objects\59" />
+    <Folder Include=".git\objects\5a" />
+    <Folder Include=".git\objects\5e" />
+    <Folder Include=".git\objects\60" />
+    <Folder Include=".git\objects\62" />
+    <Folder Include=".git\objects\63" />
+    <Folder Include=".git\objects\65" />
+    <Folder Include=".git\objects\66" />
+    <Folder Include=".git\objects\69" />
+    <Folder Include=".git\objects\6b" />
+    <Folder Include=".git\objects\6f" />
+    <Folder Include=".git\objects\70" />
+    <Folder Include=".git\objects\72" />
+    <Folder Include=".git\objects\73" />
+    <Folder Include=".git\objects\77" />
+    <Folder Include=".git\objects\78" />
+    <Folder Include=".git\objects\7b" />
+    <Folder Include=".git\objects\7e" />
+    <Folder Include=".git\objects\7f" />
+    <Folder Include=".git\objects\80" />
+    <Folder Include=".git\objects\87" />
+    <Folder Include=".git\objects\8e" />
+    <Folder Include=".git\objects\97" />
+    <Folder Include=".git\objects\99" />
+    <Folder Include=".git\objects\9c" />
+    <Folder Include=".git\objects\9d" />
+    <Folder Include=".git\objects\a0" />
+    <Folder Include=".git\objects\a1" />
+    <Folder Include=".git\objects\a3" />
+    <Folder Include=".git\objects\a4" />
+    <Folder Include=".git\objects\a7" />
+    <Folder Include=".git\objects\a8" />
+    <Folder Include=".git\objects\b0" />
+    <Folder Include=".git\objects\b1" />
+    <Folder Include=".git\objects\b8" />
+    <Folder Include=".git\objects\b9" />
+    <Folder Include=".git\objects\bc" />
+    <Folder Include=".git\objects\be" />
+    <Folder Include=".git\objects\c2" />
+    <Folder Include=".git\objects\c8" />
+    <Folder Include=".git\objects\c9" />
+    <Folder Include=".git\objects\cb" />
+    <Folder Include=".git\objects\ce" />
+    <Folder Include=".git\objects\cf" />
+    <Folder Include=".git\objects\d4" />
+    <Folder Include=".git\objects\d5" />
+    <Folder Include=".git\objects\d9" />
+    <Folder Include=".git\objects\da" />
+    <Folder Include=".git\objects\dc" />
+    <Folder Include=".git\objects\dd" />
+    <Folder Include=".git\objects\df" />
+    <Folder Include=".git\objects\e0" />
+    <Folder Include=".git\objects\e2" />
+    <Folder Include=".git\objects\e3" />
+    <Folder Include=".git\objects\e5" />
+    <Folder Include=".git\objects\e7" />
+    <Folder Include=".git\objects\eb" />
+    <Folder Include=".git\objects\ec" />
+    <Folder Include=".git\objects\f0" />
+    <Folder Include=".git\objects\f6" />
+    <Folder Include=".git\objects\f8" />
+    <Folder Include=".git\objects\fd" />
+    <Folder Include=".git\objects\fe" />
+    <Folder Include=".git\objects\ff" />
+    <Folder Include=".git\objects\info" />
+    <Folder Include=".git\objects\pack" />
+    <Folder Include=".git\refs" />
+    <Folder Include=".git\refs\heads" />
+    <Folder Include=".git\refs\remotes" />
+    <Folder Include=".git\refs\remotes\origin" />
+    <Folder Include=".git\refs\tags" />
+    <Folder Include="bootstrap" />
+    <Folder Include="bootstrap\js" />
+    <Folder Include="bootstrap\js\tests" />
+    <Folder Include="bootstrap\js\tests\unit" />
+    <Folder Include="bootstrap\js\tests\vendor" />
+    <Folder Include="bootstrap\less" />
+    <Folder Include="obj" />
+    <Folder Include="obj\Debug" />
+    <Folder Include="public" />
+    <Folder Include="public\css" />
+    <Folder Include="public\css\Bootstrap" />
+    <Folder Include="public\scripts" />
+    <Folder Include="src" />
+    <Folder Include="src\lib" />
+    <Folder Include="src\models" />
+    <Folder Include="src\models\client" />
+    <Folder Include="src\routing" />
+    <Folder Include="src\routing\client" />
+    <Folder Include="src\views" />
+    <Folder Include="styles" />
+    <Folder Include="views" />
+    <Folder Include="views\partials" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

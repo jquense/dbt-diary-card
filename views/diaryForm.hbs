@@ -8,20 +8,20 @@
         <legend>Behaviors</legend>
 
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-3">Misery</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Misery</label>
+            <div class="col-md-9 col-sm-8">
               {{radio-range 6  'use' }}
             </div>
 	      </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-3">Suicide Ideation</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Suicide Ideation</label>
+            <div class="col-md-9 col-sm-8">
               {{radio-range 6  'suicide' }}
             </div>
 	    </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-3">Self Harm</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Self Harm</label>
+            <div class="col-md-9 col-sm-8">
               {{radio-range 6  'selfHarm' }}
             </div>
 	    </div>
@@ -29,38 +29,38 @@
 	<fieldset>
         <legend>Emotions</legend>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-3">Pain</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Pain</label>
+            <div class="col-md-9 col-sm-8">
               {{radio-range 6  'pain' }}
             </div>
 	      </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-3">Sadness</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Sadness</label>
+            <div class="col-md-9 col-sm-8">
               {{radio-range 6  'sadness' }}
             </div>
 	    </div>
         <div class="form-group">
-          <label class="control-label col-md-2 col-sm-3">Shame</label>
-          <div class="col-md-10 col-sm-9">
+          <label class="control-label col-md-3 col-sm-4">Shame</label>
+          <div class="col-md-9 col-sm-8">
             {{radio-range 6  'shame' }}
           </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-md-2 col-sm-3">Anger</label>
-          <div class="col-md-10 col-sm-9">
+          <label class="control-label col-md-3 col-sm-4">Anger</label>
+          <div class="col-md-9 col-sm-8">
             {{radio-range 6  'anger' }}
           </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-md-2 col-sm-3">Fear</label>
-          <div class="col-md-10 col-sm-9">
+          <label class="control-label col-md-3 col-sm-4">Fear</label>
+          <div class="col-md-9 col-sm-8">
             {{radio-range 6  'fear' }}
           </div>
 	      </div>
       <div class="form-group">
-        <label class="control-label col-md-2 col-sm-3">Joy</label>
-        <div class="col-md-10 col-sm-9">
+        <label class="control-label col-md-3 col-sm-4">Joy</label>
+        <div class="col-md-9 col-sm-8">
           {{radio-range 6 'joy' }}
         </div>
       </div>
@@ -70,8 +70,8 @@
         <legend>Urges</legend>
 
         <div class="form-group ">
-            <label class="control-label col-md-2 col-sm-3">Alcohol</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Alcohol</label>
+            <div class="col-md-8 col-sm-8">
                 <input class="form-occurances"
                      {{bind-to 'value: alcohol.times' 
                        role="numerictextbox"
@@ -83,8 +83,8 @@
             </div>
 	    </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-3">Over the Counter Medications</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Over the Counter Medications</label>
+            <div class="col-md-8 col-sm-8">
                 <input class="form-occurances"
                        {{bind-to 'value: otc.times' 
                        role="numerictextbox"
@@ -96,8 +96,8 @@
             </div>
 	    </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-3">Prescription Medications</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Prescription Medications</label>
+            <div class="col-md-8 col-sm-8">
                 <input class="form-occurances"
                        {{bind-to 'value: prescription.times' 
                            role="numerictextbox"
@@ -109,8 +109,8 @@
             </div>
 	    </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-3">Illicit Drugs</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Illicit Drugs</label>
+            <div class="col-md-8 col-sm-8">
                 <input class="form-occurances"
                        {{bind-to 'value: illicit.times' 
                            role="numerictextbox"
@@ -125,15 +125,15 @@
     <fieldset>
         <legend>---</legend>
         <div class="form-group">
-          <div class="col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3">
+          <div class="col-md-9 col-sm-8 col-md-offset-2 col-sm-offset-3">
             <label class="checkbox ">
               <input type="checkbox" name="causedSelfHarm" value="true" />Caused self-harm</label>
           </div>
         </div>
         
         <div class="form-group ">
-            <label class="control-label col-md-2 col-sm-3">Skills</label>
-            <div class="col-md-10 col-sm-9">
+            <label class="control-label col-md-3 col-sm-4">Skills</label>
+            <div class="col-md-9 col-sm-8">
                 <label class="radio">
                     <input type="radio" name="skills" value="0" data-bind="checked: skills"/>Not thought about or used</label>
                 <label class="radio">

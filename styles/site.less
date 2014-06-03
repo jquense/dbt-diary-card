@@ -46,8 +46,29 @@ body {
             width: @container-lg;
         }*/
     }
+
+    
 }
 
+ 
+@media (max-width: @screen-xs-max) {
+    .scrolling-pills {
+        width: 100%;
+        overflow: auto;
+
+        ul {
+            display: table;
+            table-layout: fixed;
+        }
+
+        ul > li {
+            width: 100px;
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+    }
+}
 
 .radio-header {
     display: inline-block;

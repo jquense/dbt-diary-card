@@ -10941,30 +10941,6 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 function program1(depth0,data) {
   
   var buffer = "", stack1, helper, options;
-  buffer += "\r\n              <li data-bind=\"class: { nav-success: submitted }\" ";
-  stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " >\r\n                <a href=\"";
-  stack1 = (helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM-DD-YY", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM-DD-YY", options));
-  buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{},data:data},helper ? helper.call(depth0, "/diary/%s", stack1, options) : helperMissing.call(depth0, "url", "/diary/%s", stack1, options)))
-    + "\" \r\n                    data-url=\"client\" \r\n                    data-target=\"#day_"
-    + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\" \r\n                    data-toggle=\"pill\">\r\n                  "
-    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "Do: dddd", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "Do: dddd", options)))
-    + "\r\n                  <i class=\"fa fa-pencil\" data-bind=\"visible: days["
-    + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "].started\"></i>\r\n                </a>\r\n              </li>\r\n            ";
-  return buffer;
-  }
-function program2(depth0,data) {
-  
-  
-  return "class=\"active\"";
-  }
-
-function program4(depth0,data) {
-  
-  var buffer = "", stack1, helper, options;
   buffer += "\r\n          <li data-bind=\"class: { nav-success: submitted }\" ";
   stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -10980,36 +10956,38 @@ function program4(depth0,data) {
     + "].started\"></i>\r\n          </a>\r\n          </li>\r\n          ";
   return buffer;
   }
+function program2(depth0,data) {
+  
+  
+  return "class=\"active\"";
+  }
 
-function program6(depth0,data) {
+function program4(depth0,data) {
   
   var buffer = "", stack1;
   buffer += "\r\n    <div class=\"tab-pane fade ";
-  stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\" id=\"day_"
     + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\"></div>\r\n    ";
   return buffer;
   }
-function program7(depth0,data) {
+function program5(depth0,data) {
   
   
   return "in active ";
   }
 
-  buffer += "\r\n\r\n  <div class=\"navbar navbar-default navbar-static-top\" style=\"margin-bottom: 10px\">\r\n    <div class=\"container\">\r\n      <div class=\"navbar-header\">\r\n          <div class=\" pull-left\">\r\n            <a href=\""
+  buffer += "\r\n\r\n  <div class=\"navbar navbar-default navbar-static-top\" style=\"margin-bottom: 10px\">\r\n    <div class=\"container \">\r\n      <div class=\"navbar-header\">\r\n          <div class=\" pull-left\">\r\n            <a href=\""
     + escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{},data:data},helper ? helper.call(depth0, "/overview", options) : helperMissing.call(depth0, "url", "/overview", options)))
-    + "\"\r\n               class=\"btn btn-link navbar-btn\"\r\n               data-url=\"client\">\r\n              <i class=\"fa fa-arrow-left\"></i> Back</a>\r\n          </div>\r\n          <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\r\n            <span class=\"sr-only\">Toggle navigation</span>\r\n            <span class=\"icon-bar\"></span>\r\n            <span class=\"icon-bar\"></span>\r\n            <span class=\"icon-bar\"></span>\r\n          </button>\r\n          <div class=\"navbar-toolbar pull-right\">\r\n            <span class=\"static-text\">Week of the: </span>\r\n            <input class=\"week-picker\"\r\n                   data-bind=\"value: firstOfWeek, max: endOfWeek\"\r\n                   data-role=\"datepicker\"\r\n                   data-format=\"MMM dd\">\r\n          </div>\r\n      </div>\r\n      <div class=\"collapse navbar-collapse \" id=\"bs-example-navbar-collapse-1\">\r\n          <ul class=\"nav nav-pills nav-justified visible-xs\">\r\n            ";
+    + "\"\r\n               class=\"btn btn-link navbar-btn\"\r\n               data-url=\"client\">\r\n              <i class=\"fa fa-arrow-left\"></i> Back</a>\r\n          </div>\r\n          <div class=\"navbar-toolbar pull-right\">\r\n            <span class=\"static-text\">Week of the: </span>\r\n            <input class=\"week-picker\"\r\n                   data-bind=\"value: firstOfWeek, max: endOfWeek\"\r\n                   data-role=\"datepicker\"\r\n                   data-format=\"MMM dd\"/>\r\n          </div>\r\n      </div>\r\n    </div> \r\n  </div>\r\n\r\n<div class=\"top-bar scrolling-pills\" data-spy=\"affix\" data-offset-top=\"62\">\r\n  <div class=\"container\">\r\n      <ul class=\"nav nav-pills nav-justified\">\r\n          ";
   stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n          </ul>\r\n        </div>\r\n    </div> \r\n  </div>\r\n\r\n<div class=\"top-bar hidden-xs\" data-spy=\"affix\" data-offset-top=\"62\">\r\n  <div class=\"container\">\r\n        <ul class=\"nav nav-pills nav-justified\">\r\n          ";
+  buffer += "\r\n        </ul>\r\n  </div>\r\n</div>\r\n<div class=\"pg-main container\">\r\n  <div class=\"callout callout-info\" data-bind=\"visible: submitted\">This Diary has already been submitted so you cannot change it</div>\r\n  <div class=\"tab-content\">\r\n    ";
   stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n        </ul>\r\n    </div>\r\n</div>\r\n<div class=\"pg-main container\">\r\n  <div class=\"callout callout-info\" data-bind=\"visible: submitted\">This Diary has already been submitted so you cannot change it</div>\r\n  <div class=\"tab-content\">\r\n    ";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n  </div>\r\n</div>\r\n\r\n\r\n\r\n<nav class=\"navbar navbar-default navbar-fixed-bottom\" role=\"navigation\">\r\n  <div class=\"container\">\r\n    \r\n    <div class=\"navbar-toolbar navbar-right\">\r\n      <button class=\"btn btn-default btn-save\"   data-bind=\"invisible: submitted\">Save and continue later</button>\r\n      <button class=\"btn btn-success btn-submit\" data-bind=\"invisible: submitted\">Submit Diary</button>\r\n      <button class=\"btn btn-warning btn-unsubmit\" data-bind=\"visible: submitted\">Unsubmit</button>\r\n    </div>\r\n    <div class=\"message-area navbar-right\"></div>\r\n  </div>\r\n</nav>\r\n";
+  buffer += "\r\n  </div>\r\n</div>\r\n\r\n\r\n\r\n<nav class=\"navbar navbar-default navbar-fixed-bottom\" role=\"navigation\">\r\n  <div class=\"container\">\r\n    \r\n    <div class=\"navbar-toolbar navbar-right\">\r\n      <button class=\"btn btn-default btn-save\"   data-bind=\"invisible: submitted\" data-loading-text=\"Saving diary..\">Save and continue later</button>\r\n      <button class=\"btn btn-success btn-submit\" data-bind=\"invisible: submitted\" data-loading-text=\"Submitting...\">Submit Diary</button>\r\n      <button class=\"btn btn-warning btn-unsubmit\" data-bind=\"visible: submitted\">Unsubmit</button>\r\n    </div>\r\n    <div class=\"message-area navbar-right\"></div>\r\n  </div>\r\n</nav>\r\n";
   return buffer;
   });
 
@@ -11040,25 +11018,25 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   if (helper = helpers.year) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.year); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "\" name=\"year\"></input>\r\n\r\n    <fieldset>\r\n        <legend>Behaviors</legend>\r\n\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Misery</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n              "
+    + "\" name=\"year\"></input>\r\n\r\n    <fieldset>\r\n        <legend>Behaviors</legend>\r\n\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Misery</label>\r\n            <div class=\"col-md-9 col-sm-8\">\r\n              "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "use", options) : helperMissing.call(depth0, "radio-range", 6, "use", options)))
-    + "\r\n            </div>\r\n	      </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Suicide Ideation</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n              "
+    + "\r\n            </div>\r\n	      </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Suicide Ideation</label>\r\n            <div class=\"col-md-9 col-sm-8\">\r\n              "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "suicide", options) : helperMissing.call(depth0, "radio-range", 6, "suicide", options)))
-    + "\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Self Harm</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n              "
+    + "\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Self Harm</label>\r\n            <div class=\"col-md-9 col-sm-8\">\r\n              "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "selfHarm", options) : helperMissing.call(depth0, "radio-range", 6, "selfHarm", options)))
-    + "\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n	<fieldset>\r\n        <legend>Emotions</legend>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Pain</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n              "
+    + "\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n	<fieldset>\r\n        <legend>Emotions</legend>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Pain</label>\r\n            <div class=\"col-md-9 col-sm-8\">\r\n              "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "pain", options) : helperMissing.call(depth0, "radio-range", 6, "pain", options)))
-    + "\r\n            </div>\r\n	      </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Sadness</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n              "
+    + "\r\n            </div>\r\n	      </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Sadness</label>\r\n            <div class=\"col-md-9 col-sm-8\">\r\n              "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "sadness", options) : helperMissing.call(depth0, "radio-range", 6, "sadness", options)))
-    + "\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n          <label class=\"control-label col-md-2 col-sm-3\">Shame</label>\r\n          <div class=\"col-md-10 col-sm-9\">\r\n            "
+    + "\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n          <label class=\"control-label col-md-3 col-sm-4\">Shame</label>\r\n          <div class=\"col-md-9 col-sm-8\">\r\n            "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "shame", options) : helperMissing.call(depth0, "radio-range", 6, "shame", options)))
-    + "\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <label class=\"control-label col-md-2 col-sm-3\">Anger</label>\r\n          <div class=\"col-md-10 col-sm-9\">\r\n            "
+    + "\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <label class=\"control-label col-md-3 col-sm-4\">Anger</label>\r\n          <div class=\"col-md-9 col-sm-8\">\r\n            "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "anger", options) : helperMissing.call(depth0, "radio-range", 6, "anger", options)))
-    + "\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <label class=\"control-label col-md-2 col-sm-3\">Fear</label>\r\n          <div class=\"col-md-10 col-sm-9\">\r\n            "
+    + "\r\n          </div>\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <label class=\"control-label col-md-3 col-sm-4\">Fear</label>\r\n          <div class=\"col-md-9 col-sm-8\">\r\n            "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "fear", options) : helperMissing.call(depth0, "radio-range", 6, "fear", options)))
-    + "\r\n          </div>\r\n	      </div>\r\n      <div class=\"form-group\">\r\n        <label class=\"control-label col-md-2 col-sm-3\">Joy</label>\r\n        <div class=\"col-md-10 col-sm-9\">\r\n          "
+    + "\r\n          </div>\r\n	      </div>\r\n      <div class=\"form-group\">\r\n        <label class=\"control-label col-md-3 col-sm-4\">Joy</label>\r\n        <div class=\"col-md-9 col-sm-8\">\r\n          "
     + escapeExpression((helper = helpers['radio-range'] || (depth0 && depth0['radio-range']),options={hash:{},data:data},helper ? helper.call(depth0, 6, "joy", options) : helperMissing.call(depth0, "radio-range", 6, "joy", options)))
-    + "\r\n        </div>\r\n      </div>\r\n    </fieldset>\r\n\r\n    <fieldset>\r\n        <legend>Urges</legend>\r\n\r\n        <div class=\"form-group \">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Alcohol</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n                <input class=\"form-occurances\"\r\n                     "
+    + "\r\n        </div>\r\n      </div>\r\n    </fieldset>\r\n\r\n    <fieldset>\r\n        <legend>Urges</legend>\r\n\r\n        <div class=\"form-group \">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Alcohol</label>\r\n            <div class=\"col-md-8 col-sm-8\">\r\n                <input class=\"form-occurances\"\r\n                     "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{
     'role': ("numerictextbox"),
     'decimals': (0),
@@ -11067,7 +11045,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   },data:data},helper ? helper.call(depth0, "value: alcohol.times", options) : helperMissing.call(depth0, "bind-to", "value: alcohol.times", options)))
     + "/>\r\n                <span class=\"form-control-static\" > Number of times</span>\r\n                <textarea "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{},data:data},helper ? helper.call(depth0, "value: alcohol.specify", options) : helperMissing.call(depth0, "bind-to", "value: alcohol.specify", options)))
-    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Over the Counter Medications</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n                <input class=\"form-occurances\"\r\n                       "
+    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Over the Counter Medications</label>\r\n            <div class=\"col-md-8 col-sm-8\">\r\n                <input class=\"form-occurances\"\r\n                       "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{
     'role': ("numerictextbox"),
     'decimals': (0),
@@ -11076,7 +11054,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   },data:data},helper ? helper.call(depth0, "value: otc.times", options) : helperMissing.call(depth0, "bind-to", "value: otc.times", options)))
     + " />\r\n                <span class=\"form-control-static\" > Number of times</span>\r\n                <textarea "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{},data:data},helper ? helper.call(depth0, "value: otc.specify", options) : helperMissing.call(depth0, "bind-to", "value: otc.specify", options)))
-    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Prescription Medications</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n                <input class=\"form-occurances\"\r\n                       "
+    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Prescription Medications</label>\r\n            <div class=\"col-md-8 col-sm-8\">\r\n                <input class=\"form-occurances\"\r\n                       "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{
     'role': ("numerictextbox"),
     'decimals': (0),
@@ -11085,7 +11063,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   },data:data},helper ? helper.call(depth0, "value: prescription.times", options) : helperMissing.call(depth0, "bind-to", "value: prescription.times", options)))
     + "/>\r\n                <span class=\"form-control-static\" > Number of times</span>\r\n                <textarea "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{},data:data},helper ? helper.call(depth0, "value: prescription.specify", options) : helperMissing.call(depth0, "bind-to", "value: prescription.specify", options)))
-    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Illicit Drugs</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n                <input class=\"form-occurances\"\r\n                       "
+    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n        <div class=\"form-group\">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Illicit Drugs</label>\r\n            <div class=\"col-md-8 col-sm-8\">\r\n                <input class=\"form-occurances\"\r\n                       "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{
     'role': ("numerictextbox"),
     'decimals': (0),
@@ -11094,7 +11072,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   },data:data},helper ? helper.call(depth0, "value: illicit.times", options) : helperMissing.call(depth0, "bind-to", "value: illicit.times", options)))
     + "/>\r\n                <span class=\"form-control-static\" > Number of times</span>\r\n                <textarea "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{},data:data},helper ? helper.call(depth0, "value: illicit.specify", options) : helperMissing.call(depth0, "bind-to", "value: illicit.specify", options)))
-    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n    <fieldset>\r\n        <legend>---</legend>\r\n        <div class=\"form-group\">\r\n          <div class=\"col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3\">\r\n            <label class=\"checkbox \">\r\n              <input type=\"checkbox\" name=\"causedSelfHarm\" value=\"true\" />Caused self-harm</label>\r\n          </div>\r\n        </div>\r\n        \r\n        <div class=\"form-group \">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Skills</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"0\" data-bind=\"checked: skills\"/>Not thought about or used</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"1\" data-bind=\"checked: skills\"/>Thought about, not used, did not want too</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"2\" data-bind=\"checked: skills\"/>Thought about, not used, wanted to</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"3\" data-bind=\"checked: skills\"/>Tried but could not use them</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"4\" data-bind=\"checked: skills\"/>Tried, could do them, but they didn't help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"5\" data-bind=\"checked: skills\"/>Tried, could use them, helped</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"6\" data-bind=\"checked: skills\"/>Did not try, used them, did not help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"7\" data-bind=\"checked: skills\"/>Did not try, used them, helped</label>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n</form>";
+    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n    <fieldset>\r\n        <legend>---</legend>\r\n        <div class=\"form-group\">\r\n          <div class=\"col-md-9 col-sm-8 col-md-offset-2 col-sm-offset-3\">\r\n            <label class=\"checkbox \">\r\n              <input type=\"checkbox\" name=\"causedSelfHarm\" value=\"true\" />Caused self-harm</label>\r\n          </div>\r\n        </div>\r\n        \r\n        <div class=\"form-group \">\r\n            <label class=\"control-label col-md-3 col-sm-4\">Skills</label>\r\n            <div class=\"col-md-9 col-sm-8\">\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"0\" data-bind=\"checked: skills\"/>Not thought about or used</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"1\" data-bind=\"checked: skills\"/>Thought about, not used, did not want too</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"2\" data-bind=\"checked: skills\"/>Thought about, not used, wanted to</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"3\" data-bind=\"checked: skills\"/>Tried but could not use them</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"4\" data-bind=\"checked: skills\"/>Tried, could do them, but they didn't help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"5\" data-bind=\"checked: skills\"/>Tried, could use them, helped</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"6\" data-bind=\"checked: skills\"/>Did not try, used them, did not help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"7\" data-bind=\"checked: skills\"/>Did not try, used them, helped</label>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n</form>";
   return buffer;
   });
 
@@ -11176,14 +11154,17 @@ function program5(depth0,data) {
   return "&nbsp;&nbsp;<i class=\"fa fa-check-circle\"></i>";
   }
 
-function program7(depth0,data) {
+function program7(depth0,data,depth1) {
   
   var buffer = "", stack1, helper, options;
   buffer += "<a href=\"";
   stack1 = (helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM-DD-YY", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM-DD-YY", options));
   buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{},data:data},helper ? helper.call(depth0, "/diary/%s", stack1, options) : helperMissing.call(depth0, "url", "/diary/%s", stack1, options)))
     + "\" \r\n          class=\"btn ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.started), {hash:{},inverse:self.program(10, program10, data),fn:self.program(8, program8, data),data:data});
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.started), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " ";
+  stack1 = helpers['if'].call(depth0, (depth1 && depth1.submitted), {hash:{},inverse:self.program(12, program12, data),fn:self.program(10, program10, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\">"
     + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "dddd", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "dddd", options)))
@@ -11193,10 +11174,16 @@ function program7(depth0,data) {
 function program8(depth0,data) {
   
   
-  return "btn-success";
+  return "btn-info";
   }
 
 function program10(depth0,data) {
+  
+  
+  return "btn-success";
+  }
+
+function program12(depth0,data) {
   
   
   return "btn-default";
@@ -11213,7 +11200,7 @@ function program10(depth0,data) {
   stack1 = helpers['if'].call(depth0, (depth0 && depth0.submitted), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n</a>\r\n<div class=\"col-md-10 col-lg-11 hidden-sm hidden-xs\">\r\n  <div class=\"btn-group btn-group-justified\" style =\"margin-top:5px;\">";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.programWithDepth(7, program7, data, depth0),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</div>\r\n</div>\r\n\r\n\r\n\r\n";
   return buffer;

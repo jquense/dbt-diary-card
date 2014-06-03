@@ -36,6 +36,14 @@ module.exports = View.extend({
             stacking: 'up',
         })
 
+        this.model.on('change:submitted', function(){
+            var submitted = this.get('submitted');
+
+            _.each(self.days, function(day){
+                day.readonly(!submitted);
+            })
+        })
+
         this.weekpicker = this.$el.find('input.week-picker')
             .getKendoDatePicker()
             .bind('change', function () {
@@ -74,7 +82,8 @@ module.exports = View.extend({
         } else 
             dialog.alert({ 
                 title: 'Missing information',
-                message: 'You can\'t submit a diary until you\'ve filled out every day.',
+                message: '<p>It looks like you haven\'t finished this week. Make sure to fill out each day before submitting.</p>'
+                    + '<p>You can save and continue working on this diary later by clicking on the <strong>Save and continue later</strong> button</p>',
             })
     },
 
@@ -140,7 +149,6 @@ module.exports = View.extend({
 
                 day.model
                     .on('change', function(e){
-
                         self.model.get('days')[idx].set(e.field, this.get(e.field))
                     })
 
@@ -151,4 +159,5 @@ module.exports = View.extend({
             })
             .get()
     }
+
 });

@@ -7,7 +7,7 @@
   <div class="btn-group btn-group-justified" style ="margin-top:5px;">
     {{~#each days ~}}
       <a href="{{url '/diary/%s' (dateFormat date 'MMM-DD-YY') }}" 
-          class="btn {{#if started}}btn-success{{else}}btn-default{{/if}}">
+          class="btn {{#if started}}btn-info{{/if}} {{#if ../submitted}}btn-success{{else}}btn-default{{/if}}">
         {{~dateFormat date 'dddd'~}}
       </a>
     {{~/each~}}

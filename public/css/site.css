@@ -37,6 +37,22 @@ body {
 .top-bar.affix + div {
   margin-top: 70px;
 }
+@media (max-width: 767px) {
+  .scrolling-pills {
+    width: 100%;
+    overflow: auto;
+  }
+  .scrolling-pills ul {
+    display: table;
+    table-layout: fixed;
+  }
+  .scrolling-pills ul > li {
+    width: 100px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+  }
+}
 .radio-header {
   display: inline-block;
   width: 17px;
