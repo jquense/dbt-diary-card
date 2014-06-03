@@ -5,6 +5,19 @@ body {
     padding-bottom: 70px; 
 }
 
+.btn-link {
+    &.text-success {
+        color: @state-success-text;
+    }
+
+    &.text-warning {
+        color: @state-warning-text;
+    }
+}
+.navbar-header {
+    float: none;
+}
+
 .top-bar {
     background-color: white;
     padding: 10px 0;
@@ -18,7 +31,7 @@ body {
         .transition(background .25s ease-in-out);
         
         + div {
-            margin-top: 81px;
+            margin-top: 70px;
         }
 
         /*@media (min-width: @screen-sm-min) {
@@ -101,4 +114,9 @@ body {
     &.nav-danger{
         .pill-variant(@btn-danger-bg)
     }
+}
+
+.message-area {
+    margin-right: 60px;
+    .navbar-vertical-align(@input-height-base) 
 }

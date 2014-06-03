@@ -41,11 +41,11 @@ Handlebars.registerHelper( 'each', function ( context, options ) {
     return ret;
 });
 
-Handlebars.registerHelper('url', function(url, options){
-    options = _.last(arguments)
-    url = format.apply(null,_.initial(arguments))
+Handlebars.registerHelper('url', function(){
+    var options = arguments[arguments.length - 1]
+      , url = format.apply(null,_.initial(arguments))
 
-    return url + '?' + qs.stringify(options.hash)
+    return url + (_.size(options.hash) ? '?' + qs.stringify(options.hash) : '')
 })
 
 Handlebars.registerHelper('format', function(format){

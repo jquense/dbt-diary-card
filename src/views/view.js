@@ -2,20 +2,30 @@
 var _ = require('lodash')
   , Backbone = require('backbone')
   , Model = require('../models/client/model')
+  , Collection = require('../models/client/collection')
   , viewOptions = [ 'template', 'el', 'id', 'attributes', 'className', 'tagName', 'events' ];
 
 
 module.exports = Backbone.View.extend({
 
     constructor: function(options){
+        var el;
+
         this.cid = _.uniqueId('view')
 
         options || (options = {})
 
         _.extend(this, _.pick(options, viewOptions))
 
-        this.model      = createModel(this.model, options.model, Model)
-        this.collection = createModel(this.collection, options.collection, Backbone.Collection)
+        el = _.result(this, 'el')
+        el = el instanceof Backbone.$ ? el : Backbone.$(el);
+
+        if( el.length) this._existing = true;
+
+        if(this.model || options.model) 
+            this.model = createModel(this.model, options.model || {}, Model)
+        if(this.collection || options.collection) 
+            this.collection = createModel(this.collection, options.collection || [], Collection)
 
         this._ensureElement()
 
@@ -25,7 +35,7 @@ module.exports = Backbone.View.extend({
 
     fetch: function (options) {
         var self = this
-          , bound = this.model || this.collection;
+          , bound = this.collection || this.model;
 
         options || (options = {})
 
@@ -41,7 +51,7 @@ module.exports = Backbone.View.extend({
     },
 
     _data: function(){
-        var bound = this.model || this.collection
+        var bound = this.collection || this.model;
 
         return bound && bound.toJSON() || {}
     },
@@ -59,7 +69,7 @@ module.exports = Backbone.View.extend({
 
     applyBindings: function(){
         kendo.unbind(this.$el)
-        kendo.bind(this.$el, this.model || this.collection)
+        this.model && kendo.bind(this.$el, this.model )
     },
 
     render: function (data) {
@@ -72,6 +82,13 @@ module.exports = Backbone.View.extend({
         self.applyBindings();
         
         return self.ready();
+    },
+
+    close: function(){
+          this.$el[this._existing ? 'empty' : 'remove']();
+          this.stopListening();
+          kendo.unbind(this.$el)
+          return this;
     },
 
     destroy: function(){ 
@@ -103,5 +120,5 @@ function createModel(model, data, base){
     if( !data && model instanceof ctor)
         return model
 
-    return new ctor(data || {})
+    return new ctor(data)
 }

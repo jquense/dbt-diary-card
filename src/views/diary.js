@@ -1,6 +1,7 @@
 
 var _ = require('lodash')
   , moment = require('moment')
+  , util = require('../lib/util')
   , dialog = require('../lib/dialog')
   , Promise = require('bluebird')
   , Backbone = require('backbone')
@@ -28,22 +29,38 @@ module.exports = View.extend({
 
         this._days()
 
+        this.notify = new kendo.ui.Notification($('<span/>'), {
+            appendTo: this.$('.navbar-fixed-bottom .message-area'),
+            button: true,
+            autoHideAfter: 6000,
+            stacking: 'up',
+        })
+
         this.weekpicker = this.$el.find('input.week-picker')
             .getKendoDatePicker()
             .bind('change', function () {
-                var date = moment(this.value())
+                var val = this.value()
+                  , date = moment(val).clone()
 
-                Backbone.history.navigate('/diary?date=' + date.format('MMM-DD-YY'), true)
+                if (!this._preventChange){
+                    this._preventChange = true
+                    this.value(util.startOf('w', val))
+                    Backbone.history.navigate('/diary/' + date.format('MMM-DD-YY'), true)
+                }
+
+                this._preventChange = false
             }) 
     },
 
     save: function(e){
-        var $btn = $(e.target);
+        var notify = this.notify
+          , $btn = $(e.target);
 
         $btn.button('loading')
 
         return this.model.save()
             .finally(function(){
+                notify.success('Diary saved.')
                 $btn.button('reset')    
             }) 
     },
@@ -90,7 +107,11 @@ module.exports = View.extend({
 
         function select(){
             var idx = _.findIndex(self.model.get('days'), function(d){ return date.isSame(d.date) });
-            if (~idx) self.$('a[data-toggle=pill]:eq(' + idx +')').tab('show');
+            if (~idx) 
+                self.$('ul.nav-pills')
+                    .each(function(){
+                        $(this).find('a[data-toggle=pill]:eq(' + idx +')').tab('show');
+                    })
         }
     },
 
@@ -106,6 +127,7 @@ module.exports = View.extend({
 
     _days: function () {
         var self = this
+          , submitted = self.model.get('submitted')
           , days = self.model.get('days').toJSON();
 
         self.days = self.$el
@@ -122,7 +144,9 @@ module.exports = View.extend({
                         self.model.get('days')[idx].set(e.field, this.get(e.field))
                     })
 
+
                 day.render()
+                day.readonly(!submitted)
                 return day;
             })
             .get()

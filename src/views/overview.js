@@ -3,7 +3,7 @@ var _ = require('lodash')
   , moment = require('moment')
   , dialog = require('../lib/dialog')
   , Promise = require('bluebird')
-  , Backbone = require('backbone')
+  , Model = require('../models/client/model')
   , View = require('./view');
 
 var Handlebars = require('hbsfy/runtime')
@@ -14,14 +14,24 @@ module.exports = View.extend({
 
     template: require('../../views/overview.hbs'),
 
-    collection: Backbone.Collection.extend({
+    collection: require('../models/client/collection').extend({
         url: '/api/diary',
 
-        model: require('../models/client/model').extend({  
+        comparator: function (a, b) {
+            return a.get('date').getTime() < b.get('date').getTime() ? 1 : -1;
+        },
+
+        model: Model.extend({
+            idField: '_id',
             fields: {
                 date: 'date',
-                days: []
-            }
+                days: [ Model.extend({
+                    fields: {
+                        date: 'date',
+                        started: 'boolean'        
+                    }    
+                })]        
+            }    
         })
     }), 
 
@@ -33,7 +43,12 @@ module.exports = View.extend({
 
     ready: function () {
         var self = this;
- 
     },
+
+    _data: function(){
+        return _.groupBy(this.collection, function(m){
+            return moment(m.get('date')).format('MMMM')
+        })   
+    }
 
 });

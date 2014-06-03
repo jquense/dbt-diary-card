@@ -1,26 +1,57 @@
 
+
   <div class="navbar navbar-default navbar-static-top" style="margin-bottom: 10px">
     <div class="container">
-      <div class="navbar-toolbar">
-        <span class="static-text">Week of the: </span>
-        <input class="week-picker"
-               data-bind="value: firstOfWeek, max: endOfWeek"
-               data-role="datepicker"
-               data-format="MMM dd">
+      <div class="navbar-header">
+          <div class=" pull-left">
+            <a href="{{url '/overview' }}"
+               class="btn btn-link navbar-btn"
+               data-url="client">
+              <i class="fa fa-arrow-left"></i> Back</a>
+          </div>
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="navbar-toolbar pull-right">
+            <span class="static-text">Week of the: </span>
+            <input class="week-picker"
+                   data-bind="value: firstOfWeek, max: endOfWeek"
+                   data-role="datepicker"
+                   data-format="MMM dd">
+          </div>
+      </div>
+      <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
+          <ul class="nav nav-pills nav-justified visible-xs">
+            {{#each days}}
+              <li data-bind="class: { nav-success: submitted }" {{#unless @index}}class="active"{{/unless}} >
+                <a href="{{url '/diary/%s' (dateFormat date 'MMM-DD-YY') }}" 
+                    data-url="client" 
+                    data-target="#day_{{@index}}" 
+                    data-toggle="pill">
+                  {{dateFormat date 'Do: dddd'}}
+                  <i class="fa fa-pencil" data-bind="visible: days[{{@index}}].started"></i>
+                </a>
+              </li>
+            {{/each}}
+          </ul>
         </div>
     </div> 
   </div>
 
-<div class="top-bar" data-spy="affix" data-offset-top="62">
+<div class="top-bar hidden-xs" data-spy="affix" data-offset-top="62">
   <div class="container">
         <ul class="nav nav-pills nav-justified">
           {{#each days}}
           <li data-bind="class: { nav-success: submitted }" {{#unless @index}}class="active"{{/unless}} >
-          <a href="{{url '/diary' date=(dateFormat date 'MMM-DD-YY') }}" 
+          <a href="{{url '/diary/%s' (dateFormat date 'MMM-DD-YY') }}" 
               data-url="client" 
               data-target="#day_{{@index}}" 
               data-toggle="pill">
             {{dateFormat date 'Do: dddd'}}
+            <i class="fa fa-pencil" data-bind="visible: days[{{@index}}].started"></i>
           </a>
           </li>
           {{/each}}
@@ -40,10 +71,12 @@
 
 <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
   <div class="container">
+    
     <div class="navbar-toolbar navbar-right">
-      <button class="btn btn-default btn-save"   data-bind="invisible: submitted">Save Weekly Diary</button>
-      <button class="btn btn-primary btn-submit" data-bind="invisible: submitted">Submit Diary</button>
-      <button class="btn btn-primary btn-unsubmit" data-bind="visible: submitted">Unsubmit</button>
+      <button class="btn btn-default btn-save"   data-bind="invisible: submitted">Save and continue later</button>
+      <button class="btn btn-success btn-submit" data-bind="invisible: submitted">Submit Diary</button>
+      <button class="btn btn-warning btn-unsubmit" data-bind="visible: submitted">Unsubmit</button>
     </div>
+    <div class="message-area navbar-right"></div>
   </div>
 </nav>

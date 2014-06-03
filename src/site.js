@@ -21,31 +21,32 @@ $(function(){
     var current
       , router = new Router({
             routes: {
-                'diary(/)': 'diary',
-                'overview' : 'overview'   
+                'diary(/:date)': 'diary',
+                'overview' : 'overview',
+                '' :         'overview'   
             }
         })
      
     router
-        .on('route:diary', function(query){
+        .on('route:diary', function(date){
             var view = current;
 
             if (!(view instanceof Index)) {
-                view && view.remove()
+                view && view.close()
                 view = new Index()
             }
 
-            view.changeWeek(query.date 
-                ? moment(query.date, 'MMM-DD-YY').toDate() 
+            view.changeWeek(date 
+                ? moment(date, 'MMM-DD-YY').toDate() 
                 : new Date());
 
             current = view
         })
-        .on('route:overview', function(query){
+        .on('route:overview', function(){
             var view = current;
 
             if (!(view instanceof Overview)) {
-                view && view.remove()
+                view && view.close()
                 view = new Overview()
             }
 

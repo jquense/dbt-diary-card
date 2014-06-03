@@ -1,6 +1,15 @@
 body {
   padding-bottom: 70px;
 }
+.btn-link.text-success {
+  color: #468847;
+}
+.btn-link.text-warning {
+  color: #c09853;
+}
+.navbar-header {
+  float: none;
+}
 .top-bar {
   background-color: white;
   padding: 10px 0;
@@ -26,7 +35,7 @@ body {
         }*/
 }
 .top-bar.affix + div {
-  margin-top: 81px;
+  margin-top: 70px;
 }
 .radio-header {
   display: inline-block;
@@ -82,4 +91,9 @@ body {
 .nav-pills li.nav-danger.active > a {
   color: #ffffff;
   background-color: #d9534f;
+}
+.message-area {
+  margin-right: 60px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }

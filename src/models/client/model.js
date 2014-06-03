@@ -2,6 +2,7 @@
 var _ = require('lodash')
   , Backbone = require('backbone')
   , BaseModel = kendo.data.Model  
+  , sync = require('./sync')
   , inherits = require('util').inherits
   , moment = require('moment');
 
@@ -19,9 +20,9 @@ function Model(data) {
 
     data = _.extend({}, self.defaults, data);
 
-    kendo.data.ObservableObject.fn.init.call(self, data);
+    kendo.data.ObservableObject.fn.init.call(self);
 
-    self.dirty = false;
+    self.accept(data);
      
     if (self.idField) {
         self.id = self.get(self.idField);
@@ -36,7 +37,7 @@ _.extend(Model.prototype , {
     idField: 'id',
 
     fields: {},
-    defaults: {},
+    //defaults: {},
 
     shouldSerialize: function (name) {
 
@@ -136,28 +137,7 @@ _.extend(Model.prototype , {
     },
 
     sync: function(action, model, options) {
-        var map = {
-                read:     'GET',
-                create:   'POST',
-                update:   'PUT',
-                'delete': 'DELETE'
-            },
-            params = {
-                type: map[action], 
-                dataType: 'json'
-            };
-
-        options || (options = {})
-
-        if (!options.url) 
-            params.url = _.result(model, 'url') || urlError()
-
-        if (options.data == null && model && (action === 'create' || action === 'update' || action === 'patch')) {
-            params.contentType = 'application/json'
-            params.data = JSON.stringify(model.toJSON())
-        } 
-
-        return Backbone.ajax(_.extend(params, options))
+        return sync.call(this, action, model, options)
     },
 
     accept: function(data) {
@@ -211,6 +191,8 @@ function urlError() {
 function fields(ctx){
     var value, type, originalName, field;
 
+    ctx.defaults = {};
+
     for (name in ctx.fields) {
         field = ctx.fields[name];
         value = null;
@@ -245,12 +227,13 @@ function fields(ctx){
 
 function getParser(field, type){
     var primitives = require('./primitives')
-      , nested = _.isArray(type)
+      , isArray = _.isArray(type)
+      , nested = isArray && type.length 
       , parser = field.parse || primitives.parsers[type]
       , t;
 
-    if ( nested)
-        type = type.length ? type[0] : Array 
+    if (nested) type = type[0]
+    else if (isArray) return function(v){ return v }
 
     t = primitives.types[type] || type
     

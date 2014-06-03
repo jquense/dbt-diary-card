@@ -10859,11 +10859,11 @@ Handlebars.registerHelper( 'each', function ( context, options ) {
     return ret;
 });
 
-Handlebars.registerHelper('url', function(url, options){
-    options = _.last(arguments)
-    url = format.apply(null,_.initial(arguments))
+Handlebars.registerHelper('url', function(){
+    var options = arguments[arguments.length - 1]
+      , url = format.apply(null,_.initial(arguments))
 
-    return url + '?' + qs.stringify(options.hash)
+    return url + (_.size(options.hash) ? '?' + qs.stringify(options.hash) : '')
 })
 
 Handlebars.registerHelper('format', function(format){
@@ -10936,24 +10936,24 @@ var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, self=this, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
+  var buffer = "", stack1, helper, options, self=this, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
 
 function program1(depth0,data) {
   
   var buffer = "", stack1, helper, options;
-  buffer += "\r\n          <li data-bind=\"class: { nav-success: submitted }\" ";
+  buffer += "\r\n              <li data-bind=\"class: { nav-success: submitted }\" ";
   stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " >\r\n          <a href=\"";
+  buffer += " >\r\n                <a href=\"";
   stack1 = (helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM-DD-YY", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM-DD-YY", options));
-  buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{
-    'date': (stack1)
-  },data:data},helper ? helper.call(depth0, "/diary", options) : helperMissing.call(depth0, "url", "/diary", options)))
-    + "\" \r\n              data-url=\"client\" \r\n              data-target=\"#day_"
+  buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{},data:data},helper ? helper.call(depth0, "/diary/%s", stack1, options) : helperMissing.call(depth0, "url", "/diary/%s", stack1, options)))
+    + "\" \r\n                    data-url=\"client\" \r\n                    data-target=\"#day_"
     + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
-    + "\" \r\n              data-toggle=\"pill\">\r\n            "
+    + "\" \r\n                    data-toggle=\"pill\">\r\n                  "
     + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "Do: dddd", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "Do: dddd", options)))
-    + "\r\n          </a>\r\n          </li>\r\n          ";
+    + "\r\n                  <i class=\"fa fa-pencil\" data-bind=\"visible: days["
+    + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "].started\"></i>\r\n                </a>\r\n              </li>\r\n            ";
   return buffer;
   }
 function program2(depth0,data) {
@@ -10964,32 +10964,58 @@ function program2(depth0,data) {
 
 function program4(depth0,data) {
   
+  var buffer = "", stack1, helper, options;
+  buffer += "\r\n          <li data-bind=\"class: { nav-success: submitted }\" ";
+  stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += " >\r\n          <a href=\"";
+  stack1 = (helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM-DD-YY", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM-DD-YY", options));
+  buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{},data:data},helper ? helper.call(depth0, "/diary/%s", stack1, options) : helperMissing.call(depth0, "url", "/diary/%s", stack1, options)))
+    + "\" \r\n              data-url=\"client\" \r\n              data-target=\"#day_"
+    + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "\" \r\n              data-toggle=\"pill\">\r\n            "
+    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "Do: dddd", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "Do: dddd", options)))
+    + "\r\n            <i class=\"fa fa-pencil\" data-bind=\"visible: days["
+    + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "].started\"></i>\r\n          </a>\r\n          </li>\r\n          ";
+  return buffer;
+  }
+
+function program6(depth0,data) {
+  
   var buffer = "", stack1;
   buffer += "\r\n    <div class=\"tab-pane fade ";
-  stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  stack1 = helpers.unless.call(depth0, (data == null || data === false ? data : data.index), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\" id=\"day_"
     + escapeExpression(((stack1 = (data == null || data === false ? data : data.index)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
     + "\"></div>\r\n    ";
   return buffer;
   }
-function program5(depth0,data) {
+function program7(depth0,data) {
   
   
   return "in active ";
   }
 
-  buffer += "\r\n  <div class=\"navbar navbar-default navbar-static-top\" style=\"margin-bottom: 10px\">\r\n    <div class=\"container\">\r\n      <div class=\"navbar-toolbar\">\r\n        <span class=\"static-text\">Week of the: </span>\r\n        <input class=\"week-picker\"\r\n               data-bind=\"value: firstOfWeek, max: endOfWeek\"\r\n               data-role=\"datepicker\"\r\n               data-format=\"MMM dd\">\r\n        </div>\r\n    </div> \r\n  </div>\r\n\r\n<div class=\"top-bar\" data-spy=\"affix\" data-offset-top=\"62\">\r\n  <div class=\"container\">\r\n        <ul class=\"nav nav-pills nav-justified\">\r\n          ";
+  buffer += "\r\n\r\n  <div class=\"navbar navbar-default navbar-static-top\" style=\"margin-bottom: 10px\">\r\n    <div class=\"container\">\r\n      <div class=\"navbar-header\">\r\n          <div class=\" pull-left\">\r\n            <a href=\""
+    + escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{},data:data},helper ? helper.call(depth0, "/overview", options) : helperMissing.call(depth0, "url", "/overview", options)))
+    + "\"\r\n               class=\"btn btn-link navbar-btn\"\r\n               data-url=\"client\">\r\n              <i class=\"fa fa-arrow-left\"></i> Back</a>\r\n          </div>\r\n          <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#bs-example-navbar-collapse-1\">\r\n            <span class=\"sr-only\">Toggle navigation</span>\r\n            <span class=\"icon-bar\"></span>\r\n            <span class=\"icon-bar\"></span>\r\n            <span class=\"icon-bar\"></span>\r\n          </button>\r\n          <div class=\"navbar-toolbar pull-right\">\r\n            <span class=\"static-text\">Week of the: </span>\r\n            <input class=\"week-picker\"\r\n                   data-bind=\"value: firstOfWeek, max: endOfWeek\"\r\n                   data-role=\"datepicker\"\r\n                   data-format=\"MMM dd\">\r\n          </div>\r\n      </div>\r\n      <div class=\"collapse navbar-collapse \" id=\"bs-example-navbar-collapse-1\">\r\n          <ul class=\"nav nav-pills nav-justified visible-xs\">\r\n            ";
   stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n        </ul>\r\n    </div>\r\n</div>\r\n<div class=\"pg-main container\">\r\n  <div class=\"callout callout-info\" data-bind=\"visible: submitted\">This Diary has already been submitted so you cannot change it</div>\r\n  <div class=\"tab-content\">\r\n    ";
+  buffer += "\r\n          </ul>\r\n        </div>\r\n    </div> \r\n  </div>\r\n\r\n<div class=\"top-bar hidden-xs\" data-spy=\"affix\" data-offset-top=\"62\">\r\n  <div class=\"container\">\r\n        <ul class=\"nav nav-pills nav-justified\">\r\n          ";
   stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(4, program4, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n  </div>\r\n</div>\r\n\r\n\r\n\r\n<nav class=\"navbar navbar-default navbar-fixed-bottom\" role=\"navigation\">\r\n  <div class=\"container\">\r\n    <div class=\"navbar-toolbar navbar-right\">\r\n      <button class=\"btn btn-default btn-save\"   data-bind=\"invisible: submitted\">Save Weekly Diary</button>\r\n      <button class=\"btn btn-primary btn-submit\" data-bind=\"invisible: submitted\">Submit Diary</button>\r\n      <button class=\"btn btn-primary btn-unsubmit\" data-bind=\"visible: submitted\">Unsubmit</button>\r\n    </div>\r\n  </div>\r\n</nav>\r\n";
+  buffer += "\r\n        </ul>\r\n    </div>\r\n</div>\r\n<div class=\"pg-main container\">\r\n  <div class=\"callout callout-info\" data-bind=\"visible: submitted\">This Diary has already been submitted so you cannot change it</div>\r\n  <div class=\"tab-content\">\r\n    ";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(6, program6, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n  </div>\r\n</div>\r\n\r\n\r\n\r\n<nav class=\"navbar navbar-default navbar-fixed-bottom\" role=\"navigation\">\r\n  <div class=\"container\">\r\n    \r\n    <div class=\"navbar-toolbar navbar-right\">\r\n      <button class=\"btn btn-default btn-save\"   data-bind=\"invisible: submitted\">Save and continue later</button>\r\n      <button class=\"btn btn-success btn-submit\" data-bind=\"invisible: submitted\">Submit Diary</button>\r\n      <button class=\"btn btn-warning btn-unsubmit\" data-bind=\"visible: submitted\">Unsubmit</button>\r\n    </div>\r\n    <div class=\"message-area navbar-right\"></div>\r\n  </div>\r\n</nav>\r\n";
   return buffer;
   });
 
-},{"hbsfy/runtime":"takUR9"}],"KCqZM8":[function(require,module,exports){
+},{"hbsfy/runtime":"takUR9"}],"./views/diaryForm.hbs":[function(require,module,exports){
+module.exports=require('KCqZM8');
+},{}],"KCqZM8":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -11068,13 +11094,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   },data:data},helper ? helper.call(depth0, "value: illicit.times", options) : helperMissing.call(depth0, "bind-to", "value: illicit.times", options)))
     + "/>\r\n                <span class=\"form-control-static\" > Number of times</span>\r\n                <textarea "
     + escapeExpression((helper = helpers['bind-to'] || (depth0 && depth0['bind-to']),options={hash:{},data:data},helper ? helper.call(depth0, "value: illicit.specify", options) : helperMissing.call(depth0, "bind-to", "value: illicit.specify", options)))
-    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n    <fieldset>\r\n        <legend>---</legend>\r\n        <div class=\"form-group\">\r\n          <div class=\"col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3\">\r\n            <label class=\"checkbox \">\r\n              <input type=\"checkbox\" name=\"causedSelfHarm\" value=\"true\" />Caused self-harm</label>\r\n          </div>\r\n        </div>\r\n        \r\n        <div class=\"form-group \">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Skills</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"0\" data-bind=\"checked: skills\"/>Not thought about or used</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"1\" data-bind=\"checked: skills\"/>Thought about, not used, did not want too</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"2\" data-bind=\"checked: skills\"/>Thought about, not used, wanted to</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"3\" data-bind=\"checked: skills\"/>Tried but could not use them</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"4\" data-bind=\"checked: skills\"/>Tried, could do them, but they didn't help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"5\" data-bind=\"checked: skills\"/>Tried, could use them, helped</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"6\" data-bind=\"checked: skills\"/>Did not try, used them, did not help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"7\" data-bind=\"checked: skills\"/>Did not try, used them, helped</label>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n    <div class=\"form-group \">\r\n      <div class=\"col-sm-offset-3 col-md-offset-2 col-sm-9 col-md-10\">\r\n        <label class=\"checkbox text-success\">\r\n          <input type=\"checkbox\" name=\"skills\" data-bind=\"checked: submitted\"/>I've finished working on this day.\r\n        </label>\r\n      </div>\r\n    </div>\r\n</form>";
+    + " class=\"form-control input-padding\" placeholder=\"optionally specify what happened...\"></textarea>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n    <fieldset>\r\n        <legend>---</legend>\r\n        <div class=\"form-group\">\r\n          <div class=\"col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3\">\r\n            <label class=\"checkbox \">\r\n              <input type=\"checkbox\" name=\"causedSelfHarm\" value=\"true\" />Caused self-harm</label>\r\n          </div>\r\n        </div>\r\n        \r\n        <div class=\"form-group \">\r\n            <label class=\"control-label col-md-2 col-sm-3\">Skills</label>\r\n            <div class=\"col-md-10 col-sm-9\">\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"0\" data-bind=\"checked: skills\"/>Not thought about or used</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"1\" data-bind=\"checked: skills\"/>Thought about, not used, did not want too</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"2\" data-bind=\"checked: skills\"/>Thought about, not used, wanted to</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"3\" data-bind=\"checked: skills\"/>Tried but could not use them</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"4\" data-bind=\"checked: skills\"/>Tried, could do them, but they didn't help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"5\" data-bind=\"checked: skills\"/>Tried, could use them, helped</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"6\" data-bind=\"checked: skills\"/>Did not try, used them, did not help</label>\r\n                <label class=\"radio\">\r\n                    <input type=\"radio\" name=\"skills\" value=\"7\" data-bind=\"checked: skills\"/>Did not try, used them, helped</label>\r\n            </div>\r\n	    </div>\r\n    </fieldset>\r\n</form>";
   return buffer;
   });
 
-},{"hbsfy/runtime":"takUR9"}],"./views/diaryForm.hbs":[function(require,module,exports){
-module.exports=require('KCqZM8');
-},{}],"HiBQRG":[function(require,module,exports){
+},{"hbsfy/runtime":"takUR9"}],"HiBQRG":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -11088,34 +11112,45 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 },{"hbsfy/runtime":"takUR9"}],"./views/index.hbs":[function(require,module,exports){
 module.exports=require('HiBQRG');
-},{}],"./views/overview.hbs":[function(require,module,exports){
-module.exports=require('K3yFmH');
 },{}],"K3yFmH":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); partials = this.merge(partials, Handlebars.partials); data = data || {};
-  var buffer = "", stack1, self=this;
+  var buffer = "", stack1, self=this, functionType="function", escapeExpression=this.escapeExpression;
 
 function program1(depth0,data) {
   
   var buffer = "", stack1;
-  buffer += "\r\n      ";
+  buffer += "\r\n      <li>\r\n        <h2 class=\"page-header\">"
+    + escapeExpression(((stack1 = (data == null || data === false ? data : data.key)),typeof stack1 === functionType ? stack1.apply(depth0) : stack1))
+    + "</h2>\r\n        <ul style=\"list-style:none;\" class=\"list-inline\">\r\n          ";
+  stack1 = helpers.each.call(depth0, depth0, {hash:{},inverse:self.noop,fn:self.program(2, program2, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n        </ul>\r\n      </li>\r\n    ";
+  return buffer;
+  }
+function program2(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "<li class=\"media\">";
   stack1 = self.invokePartial(partials.historyItem, 'historyItem', depth0, helpers, partials, data);
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n    ";
+  buffer += "</li>";
   return buffer;
   }
 
-  buffer += "\r\n  <div class=\"navbar navbar-default\" style=\"margin-bottom: 10px\">\r\n      <div class=\"navbar-header\">\r\n        <span class=\"navbar-brand\">Welcome</span>\r\n      </div>\r\n  </div>\r\n  <div class=\"tab-content\">\r\n    ";
+  buffer += "\r\n  <div class=\"navbar navbar-default\" >\r\n      <div class=\"container\">\r\n        <div class=\"navbar-header\">\r\n          <span class=\"navbar-brand\">Welcome</span>\r\n        </div>\r\n    </div>\r\n  </div>\r\n  <ul class=\"diaries list-unstyled container\">\r\n    ";
   stack1 = helpers.each.call(depth0, depth0, {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\r\n  </div>";
+  buffer += "\r\n  </ul>";
   return buffer;
   });
 
-},{"hbsfy/runtime":"takUR9"}],27:[function(require,module,exports){
+},{"hbsfy/runtime":"takUR9"}],"./views/overview.hbs":[function(require,module,exports){
+module.exports=require('K3yFmH');
+},{}],27:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var Handlebars = require('hbsfy/runtime');
 module.exports = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
@@ -11125,38 +11160,62 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 function program1(depth0,data) {
   
+  
+  return "text-success";
+  }
+
+function program3(depth0,data) {
+  
+  
+  return "text-warning";
+  }
+
+function program5(depth0,data) {
+  
+  
+  return "&nbsp;&nbsp;<i class=\"fa fa-check-circle\"></i>";
+  }
+
+function program7(depth0,data) {
+  
   var buffer = "", stack1, helper, options;
   buffer += "<a href=\"";
   stack1 = (helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM-DD-YY", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM-DD-YY", options));
-  buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{
-    'date': (stack1)
-  },data:data},helper ? helper.call(depth0, "/diary", options) : helperMissing.call(depth0, "url", "/diary", options)))
-    + "\" \r\n         class=\"btn ";
-  stack1 = helpers.unless.call(depth0, (depth0 && depth0.started), {hash:{},inverse:self.program(4, program4, data),fn:self.program(2, program2, data),data:data});
+  buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{},data:data},helper ? helper.call(depth0, "/diary/%s", stack1, options) : helperMissing.call(depth0, "url", "/diary/%s", stack1, options)))
+    + "\" \r\n          class=\"btn ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.started), {hash:{},inverse:self.program(10, program10, data),fn:self.program(8, program8, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\">"
-    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "ddd Do", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "ddd Do", options)))
+    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "dddd", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "dddd", options)))
     + "</a>";
   return buffer;
   }
-function program2(depth0,data) {
+function program8(depth0,data) {
   
   
-  return "btn-warning";
+  return "btn-success";
   }
 
-function program4(depth0,data) {
+function program10(depth0,data) {
   
   
   return "btn-default";
   }
 
-  buffer += "<div>\r\n  <header>\r\n    <strong>"
-    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM DD", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM DD", options)))
-    + "</strong>\r\n  </header>\r\n  <div>";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  buffer += "<a href=\"";
+  stack1 = (helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "MMM-DD-YY", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "MMM-DD-YY", options));
+  buffer += escapeExpression((helper = helpers.url || (depth0 && depth0.url),options={hash:{},data:data},helper ? helper.call(depth0, "/diary/%s", stack1, options) : helperMissing.call(depth0, "url", "/diary/%s", stack1, options)))
+    + "\" \r\n   class=\"btn btn-link btn-lg col-md-2 col-lg-1 ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.submitted), {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</div>\r\n</div>\r\n";
+  buffer += "\">"
+    + escapeExpression((helper = helpers.dateFormat || (depth0 && depth0.dateFormat),options={hash:{},data:data},helper ? helper.call(depth0, (depth0 && depth0.date), "Do", options) : helperMissing.call(depth0, "dateFormat", (depth0 && depth0.date), "Do", options)));
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.submitted), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\r\n</a>\r\n<div class=\"col-md-10 col-lg-11 hidden-sm hidden-xs\">\r\n  <div class=\"btn-group btn-group-justified\" style =\"margin-top:5px;\">";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.days), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</div>\r\n</div>\r\n\r\n\r\n\r\n";
   return buffer;
   });
 

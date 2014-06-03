@@ -1,11 +1,18 @@
 
-  <div class="navbar navbar-default" style="margin-bottom: 10px">
-      <div class="navbar-header">
-        <span class="navbar-brand">Welcome</span>
-      </div>
+  <div class="navbar navbar-default" >
+      <div class="container">
+        <div class="navbar-header">
+          <span class="navbar-brand">Welcome</span>
+        </div>
+    </div>
   </div>
-  <div class="tab-content">
+  <ul class="diaries list-unstyled container">
     {{#each this}}
-      {{> historyItem }}
+      <li>
+        <h2 class="page-header">{{@key}}</h2>
+        <ul style="list-style:none;" class="list-inline">
+          {{#each this}}<li class="media">{{> historyItem }}</li>{{/each}}
+        </ul>
+      </li>
     {{/each}}
-  </div>
+  </ul>

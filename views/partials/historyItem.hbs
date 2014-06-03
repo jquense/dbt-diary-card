@@ -1,13 +1,18 @@
-<div>
-  <header>
-    <strong>{{~dateFormat date 'MMM DD' ~}}</strong>
-  </header>
-  <div>
+<a href="{{url '/diary/%s' (dateFormat date 'MMM-DD-YY') }}" 
+   class="btn btn-link btn-lg col-md-2 col-lg-1 {{#if submitted}}text-success{{else}}text-warning{{/if}}">
+  {{~dateFormat date 'Do' ~}}
+  {{#if submitted}}&nbsp;&nbsp;<i class="fa fa-check-circle"></i>{{/if}}
+</a>
+<div class="col-md-10 col-lg-11 hidden-sm hidden-xs">
+  <div class="btn-group btn-group-justified" style ="margin-top:5px;">
     {{~#each days ~}}
-      <a href="{{url '/diary' date=(dateFormat date 'MMM-DD-YY') }}" 
-         class="btn {{#unless started}}btn-warning{{else}}btn-default{{/unless}}">
-        {{~dateFormat date 'ddd Do'~}}
+      <a href="{{url '/diary/%s' (dateFormat date 'MMM-DD-YY') }}" 
+          class="btn {{#if started}}btn-success{{else}}btn-default{{/if}}">
+        {{~dateFormat date 'dddd'~}}
       </a>
     {{~/each~}}
   </div>
 </div>
+
+
+
