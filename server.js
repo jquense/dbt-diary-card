@@ -1,28 +1,22 @@
-var Handlebars = require("hbsfy/runtime")
-  , express = require('express')
+var express = require('express')
   , _ = require('lodash')
   , app = express()
-  , expressHbs = require('express3-handlebars')
   , mongoose = require('mongoose');
 
-var hbs = expressHbs.create({ 
-    extname:'.hbs'
-});
-
-app.engine('hbs', hbs.engine);
 
 if (process.env.NODE_ENV === 'development') 
   app.use(require('errorhandler')())
 
 app.use(require('serve-static')(__dirname + '/public'))
 app.use(require('body-parser')())
-app.set('view engine', 'hbs')
 
 require('./src/routing/routes')(app)
 
-mongoose.connect("mongodb://localhost/dbtDiary")
+app.get('*', function (req, res){
+	console.log('hi')
+    res.sendfile(__dirname + '/public/index.html'); 
+})
 
-mongoose.connection
-    .on('open', function(){})
+mongoose.connect("mongodb://localhost/dbtDiary")
 
 app.listen(80)

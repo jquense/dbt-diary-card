@@ -1,74 +1,65 @@
 var gulp = require('gulp')
   , less = require('gulp-less')
+  , plumber = require('gulp-plumber')
   , source = require('vinyl-source-stream')
   , browserify = require('browserify')
   , bootstrap = require('./bootstrap/build')
   , fs = require('fs');
 
-gulp.task('copy', function(){
-    gulp.src([
-        'node_modules/jquery/dist/jquery.min.js',
-        'node_modules/lodash/lodash.js',
-        ])
-        .pipe(gulp.dest('public/scripts'))    
-    
-});
-
 gulp.task('bootstrap', bootstrap);
 
 gulp.task('less', function(){
-    gulp.src('./styles/*.less')
+    gulp.src('./styles/site.less')
+        .pipe(plumber())
         .pipe(less())
         .pipe(gulp.dest('./public/css'));
 });
 
-gulp.task('templates', function(){
-    var bundle = browserify({ debug: true })
-      , files = fs
-        .readdirSync('./views')
-        .filter(function(name){ return name.indexOf('.hbs') !== -1 })
-        .map(function(name){ return './views/' + name });
-    
-    bundle.add('hbsfy/runtime') 
-    bundle.add('./src/helpers.js') 
-    bundle.add('./src/partials.js') 
-    bundle.require('hbsfy/runtime')
-    bundle.require(files) 
-    bundle.transform('browserify-swap')
+gulp.task('libs', function () {
+    var bundle = browserify();
 
-    bundle.bundle()
-        .pipe(source('templates.js'))
-        .pipe(gulp.dest('./public/scripts'))
-        
-});
-
-gulp.task('build', function(){
-    var bundle = browserify()
-      , files = fs
-        .readdirSync('./views')
-        .filter(function(name){ return name.indexOf('.hbs') !== -1 })
-        .map(function(name){ return './views/' + name })
-
-    bundle.add('./src/site.js') 
-    bundle.transform('browserify-swap')
-    bundle.external(files) 
-    bundle.external('hbsfy/runtime')
+    bundle.require('react')
+    bundle.require('react-bootstrap')
+    bundle.require('lodash')
+    bundle.require('bluebird')
 
     bundle.bundle({ debug: true })
-        .pipe(source('site.js'))
-        .pipe(gulp.dest('./public/scripts'))
+        .on("error", handleError)
+        .pipe(source('lib.js'))
+        .pipe(plumber())
+        .pipe(gulp.dest('./public/js'))
+
+});
+
+gulp.task('app', function(){
+    var bundle = browserify();
+
+    bundle.add('./src/app.jsx') 
+    bundle.transform({ es6: true },'reactify')
+    bundle.external('react')
+    bundle.external('react-bootstrap')
+    bundle.external('lodash')
+    bundle.external('bluebird')
+
+    bundle.bundle({ debug: true })
+        .on("error", handleError)
+        .pipe(source('./app.js'))
+        .pipe(plumber())
+        .pipe(gulp.dest('./public/js'))
         
 });
 
 gulp.task('watch', function() {
+    gulp.watch('./bootstrap/**/*', ['bootstrap']);
     gulp.watch('./styles/**/*.less', ['less']);
-    gulp.watch('./src/**/*', ['build']);
-    gulp.watch([
-        './views/**/*.hbs'
-      , './src/partials.js'
-      , './src/helpers.js'], ['templates']);
+    gulp.watch('./src/**/*', ['browserify']);
 });
 
 // Default Task
-gulp.task('browserify', ['templates', 'build']);
-gulp.task('default', ['copy', 'bootstrap', 'browserify', 'less']);
+gulp.task('browserify', ['libs', 'app']);
+gulp.task('default', ['browserify', 'less', 'bootstrap']);
+
+function handleError(err) {
+  console.log(err.toString());
+  this.emit('end');
+}
