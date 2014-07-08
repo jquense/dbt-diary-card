@@ -15,7 +15,7 @@ var actions = {
 			var builder = new RouteBuilder()
 			  , routes = []
 
-            builder.resource('application', actions._app.ApplicationView, '/', function(){
+            builder.resource('application', actions.app.ApplicationView, '/', function(){
                 cb.call(this)
             })
 	        

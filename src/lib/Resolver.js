@@ -17,6 +17,9 @@ Resolver.prototype = {
 	  	if ( type === 'model')
 	  		key = name.charAt(0).toUpperCase() + name.substr(1)
 
+		else if (type === 'collection')
+	  		key = name.charAt(0).toUpperCase() + name.substr(1) + 'Collection'
+
 	  	else if (type === 'store')
 	  		key = name.charAt(0).toUpperCase() + name.substr(1) + 'Store'
 

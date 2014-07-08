@@ -1,5 +1,7 @@
 var React = require('react')
   , Dispatcher      = require('react-flow/lib/Dispatcher')
+  , Registry		= require('./Registry')
+  , Resolver 		= require('./Resolver')
   , DataAccessStore = require('../stores/DataAccessStore')
   , routerActions   = require('../actions/navActions')
   , RouterStore     = require('../stores/NavigationStore')
@@ -15,13 +17,6 @@ module.exports = {
 	create: function(options){
 		var app = new Application
 
-		app.appStore = new AppStore()
-		app.dataStore = new DataAccessStore()
-		app.routerStore = new RouterStore({ pushState: true })
-
-		app.appActions = appActions
-		app.routerActions = routerActions
-		app.routerActions._app = app
 		//app.component = app._component()
 
 		Dispatcher.register('Application',
@@ -37,7 +32,34 @@ module.exports = {
 }
 
 
-function Application(){}
+function Application(){
+	this.resolver  = new Resolver(this)
+	this.container = new Registry(this.resolver)
+
+	this.container.optionsForType('actions', { instantiate: false })
+	this.container.optionsForType('view', { instantiate: false })
+
+	this.container.register('application:main', this, { instantiate: false })
+
+	this.container.register('store:dal', DataAccessStore)
+	this.container.register('store:app', AppStore)
+	this.container.register('store:router', RouterStore)
+
+	this.container.register('actions:app', appActions )
+	this.container.register('actions:routing', routerActions )
+
+	//this.container.resolve('store:dal')
+	this.container.resolve('store:app')
+
+	//this.container.inject('store', 'dal', 'store:dal')
+	this.container.inject('store', 'appState', 'store:app')
+	this.container.inject('actions:routing', 'app', 'application:main')
+
+	this.appActions = this.container.resolve('actions:app')
+
+	this.routerActions = this.container.resolve('actions:routing')
+	this.routerStore   = this.container.resolve('store:router')
+}
 
 
 Application.prototype = {
@@ -82,7 +104,6 @@ Application.prototype = {
 			_onRouteChange: function(){
 
 			}
-
 		})
 	 }
 }

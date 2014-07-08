@@ -8,6 +8,8 @@ module.exports = Flow.defineStore({
 
 	mixins: [ DataMixin ],
 
+	refs: [ 'dal', 'appState' ],
+
 	getInitialData: function(options){
 		return {
 			histories: [],

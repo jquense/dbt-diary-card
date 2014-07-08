@@ -231,10 +231,13 @@ module.exports = Flow.defineStore({
         _.eachRight(matches, function(match, idx) {
             props = {}
             props.activeRoute = prev ? prev.handler : null
-            props.params = match.params;
+            props.params = match.params
 
-            match.handler = match.route.handler(props);
-            prev = match;
+            match.handler = function(extra, children) {
+                return match.route.handler(_.extend(props, extra), children)
+            }
+
+            prev = match
         })
 
         return props

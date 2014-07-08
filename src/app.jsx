@@ -9,7 +9,7 @@ var History = require('./components/History.jsx')
   // , Diary = require('./components/Diary.jsx')
   // , Day = require('./components/Day.jsx')
 
-require('./models/client/history-models')(app);
+require('./models/client/history-models')(App);
 
 App.ApplicationView = React.createClass({
 
@@ -20,6 +20,7 @@ App.ApplicationView = React.createClass({
   getInitialState: function(){
     return App.routerStore.get()
   },
+
   getChildContext: function() {
     return { app: App };
   },
@@ -33,16 +34,23 @@ App.ApplicationView = React.createClass({
   },
 
   render: function(){
+    var ActiveRoute = this.props.activeRoute
+
     return (
-      <div>
-        {this.props.activeRoute}
-      </div>
+        <ActiveRoute />
     )
   },
 
   _onRouteChange: function(){
     this.setState(App.routerStore.get())
   }
+})
+
+App.HistoryControllerView = React.createClass({
+
+    render: function(){
+      return <History weeks={this.state.weeks}/>
+    }
 })
 
 App.routerActions
@@ -52,7 +60,7 @@ App.routerActions
         //     this.route('Day',  Day, '/diary/:year/:week/:day')
         // })
         
-        this.route('History', History)
+        this.route('History', App.HistoryControllerView)
     })
 
 

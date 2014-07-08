@@ -94,3 +94,6 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
+public/scripts/bootstrap.js
+public/scripts/bootstrap.js
+public/scripts/lodash.js
