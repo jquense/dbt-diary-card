@@ -1,4 +1,5 @@
 ﻿var React = require('react')
+  , Flow = require('react-flow')
   , DiaryStore = require('./stores/ArtistListStore')
   , flow = require('./lib/Application')
   , $ = require('jquery');
@@ -10,6 +11,8 @@ var History = require('./components/History.jsx')
   // , Day = require('./components/Day.jsx')
 
 require('./models/client/history-models')(App);
+
+App.HistoryStore = require('./stores/HistoryStore')
 
 App.ApplicationView = React.createClass({
 
@@ -47,7 +50,7 @@ App.ApplicationView = React.createClass({
 })
 
 App.HistoryControllerView = React.createClass({
-
+    mixins: [ Flow.StoreWatchMixin(App.container.resolve('store:History')) ],
     render: function(){
       return <History weeks={this.state.weeks}/>
     }

@@ -13,6 +13,7 @@ module.exports = Library = React.createClass({
 	getInitialState: () => { return {} },
 
 	render: function() {
+		
 		var Weeks = _.map(this.state.weeks || [], (val, key) => {
 		  		var Items = _.map(this.state.weeks, val => HistoryItem(null, val))
 

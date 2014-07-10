@@ -1,4 +1,5 @@
 var Flow = require('react-flow')
+  , sync = require('../util/sync')
   , Collection = Flow.Collection
   , listenFor = Flow.defineStore.listenFor
   , Url = require('url')
@@ -8,8 +9,6 @@ var Flow = require('react-flow')
   , typeMap = {};
 
 module.exports = Flow.defineStore({
-
-    mixins: [ Flow.DataHelperStoreMixin ],
 
     actions: [
 
@@ -30,21 +29,38 @@ module.exports = Flow.defineStore({
     createRecord: function(type, data){
         var model = modelTypeFor(type)
 
-        model = _.extend(new model, data)
+        model = new model
+        model.accept(data)
 
         return model
     },
 
 	find: function(type, id){
-        var records = this.recordsFor(type)
+        var record = this.recordForId(type)
+        
+        return record;
+    },
 
-        return records.get(id)
+    all: function(type){
+        var self = this
+          , records = this.recordsFor(type);
+
+        if ( records && records.length ) return Promise.resolve(records)
+
+        return sync('read', records, {})
+            .then(self._pushMany.bind(this, type));
     },
 
     recordForId: function(type, id){
-        var records = this.recordsFor(type);
+        var records = this.recordsFor(type)
+          , record  = records.find({ id: id });
 
-        return records.get(id)
+        if ( record ) return Promise.resolve(record)
+
+        record = this.createRecord(type, { id : id })
+
+        return sync('read', record, {})
+            .then(self._push.bind(this, type));
     },
 
     modelTypeFor: function(type){
@@ -62,9 +78,29 @@ module.exports = Flow.defineStore({
     },
 
     url: function(model){
-        var url = model.urlRoot || model.__type__;
+        var url = _.result(model.url);
 
+        return url;
+    },
 
+    _push: function(type, data){
+        var records = this.recordsFor(type)
+          , model   = this.modelTypeFor(type)
+
+        model = new model
+        model.accept(data)
+        
+        records.push(model)
+
+        return model
+    },
+
+    _pushMany: function(type, data){
+        var self = this;
+
+        return _.map(data, function(datum){
+            return self._push(type, datum)
+        })
     }
 })
 

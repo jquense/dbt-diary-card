@@ -17,21 +17,23 @@ function Registry (resolver){
 Registry.prototype = {
 
 	factoryFor: function(name){
-		if( ctx.registry[name] ) 
-			return ctx.registry[name].factory
+		if( this.registry[name] ) 
+			return this.registry[name].factory
 
-		return ctx.resolver.resolve(name)
+		return this.resolver.resolve(name)
 	},
 
 	resolve: function(name){
 		var item = this.registry[name]
 		  , opts = options(this, name)
-		  , factory = this.factoryFor(this, name)
+		  , factory = this.factoryFor(name)
 		  , inst;
 
   		if( _.has(this.cache, name) && opts.singleton !== false)
   			return this.cache[name]
 
+  		if ( !factory) throw new Error('type: ' + name + ' could not be resolved')
+  			
   		inst = opts.instantiate !== false
   			? create(factory, injections(this, name)) 
   			: _.extend(factory, injections(this, name))
