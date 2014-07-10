@@ -52,7 +52,7 @@ gulp.task('app', function(){
 gulp.task('watch', function() {
     gulp.watch('./bootstrap/**/*', ['bootstrap']);
     gulp.watch('./styles/**/*.less', ['less']);
-    gulp.watch('./src/**/*', ['browserify']);
+    gulp.watch(['./src/**/*', './node_modules/react-flow/**/*'], ['browserify']);
 });
 
 // Default Task
