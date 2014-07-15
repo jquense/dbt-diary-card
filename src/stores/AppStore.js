@@ -1,13 +1,13 @@
-var Flow = require('react-flow')
-  , on = Flow.defineStore.listenFor
+var Stores = require('react-flow').Stores
+  , on = Stores.listenFor
   , Url = require('url')
   , Promise = require('bluebird')
   , _ = require('lodash')
   , appConstants = require('../constants/appConstants');
 
-module.exports = Flow.defineStore({
+module.exports = Stores.StoreFactory({
 
-    mixins: [ Flow.DataHelperStoreMixin ],
+    include: Stores.DataHelperStoreMixin,
 
     getInitialData: function(){
         //localStorage.removeItem('porch_access_token')

@@ -19,4 +19,4 @@ app.get('*', function (req, res){
 
 mongoose.connect("mongodb://localhost/dbtDiary")
 
-app.listen(80)
+app.listen(8000)

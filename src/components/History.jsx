@@ -1,10 +1,10 @@
-var React = require('react')
+var Flow = require('react-flow')
   , HistoryItem = require('./HistoryItem.jsx')
-  , StoreWatch = require('react-flow').StoreWatchMixin
+  //, StoreWatch = require('react-flow').StoreWatchMixin
   , _ = require('lodash');
 
 
-module.exports = Library = React.createClass({
+module.exports = History = Flow.ViewClass({
 
 	// mixins: [ 
 	// 	StoreWatch(App.historyStore)
