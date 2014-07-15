@@ -5,49 +5,11 @@
   //, DiaryStore = require('./stores/ArtistListStore')
   , $ = require('jquery');
 
-var t1,t2,t3, t4;
 
-t3 = new Trait
-
-t1 = new Trait({ 
-    another: Trait.resolutions.chain
-  },
-  {
-    hi: function(){ 
-      console.log('heelo') 
-    },
-    another: function(){ 
-      console.log('333333') 
-    }
-  })
-
-t2 = new Trait({
-
-  hi: function(){ 
-    console.log('hihihihi') 
-  },
-
-  another: function(){ 
-    console.log('another') 
-  }
-})
-
-t4 = FlowObject
-  .extend({
-
-      traits: [
-          t1
-        , t2.resolve({ hi: Trait.resolutions.chain })
-        , t3
-      ],
-
-      another: function(){ console.log('hi!') }
-  })
-
-var obj = new t4
-obj.hi()
+//require('react-flow/lib/trait-tests')()
 
 window.App = Flow.create()
+
 
 var History = require('./components/History.jsx')
   // , Diary = require('./components/Diary.jsx')

@@ -1,5 +1,5 @@
 var React = require('react')
-  , navigate = require('../actions/navActions').route_navigate;
+ // , navigate = require('../actions/navActions').route_navigate;
 
 
 module.exports = Link = React.createClass({
@@ -17,7 +17,7 @@ module.exports = Link = React.createClass({
 
 	_onClick: function(e){
 		e.preventDefault()
-		navigate(e.target.getAttribute('href'), { replace: this.props.replace })
+		//navigate(e.target.getAttribute('href'), { replace: this.props.replace })
 		this.props.onClick && this.props.onClick(e);
 	}
 

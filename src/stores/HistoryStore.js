@@ -1,12 +1,12 @@
-var Flow = require('react-flow')
-  , listenFor = Flow.defineStore.listenFor
-  , DataMixin = Flow.DataHelperStoreMixin
+var Stores = require('react-flow').Stores
+  , listenFor = Stores.listenFor
+  , DataMixin = Stores.DataHelperStoreMixin
   , _ = require('lodash');
 
 
-module.exports = Flow.defineStore({
+module.exports = Stores.StoreFactory({
 
-	mixins: [ DataMixin ],
+	include: DataMixin ,
 
 	references: [ 'dal' ],
 
