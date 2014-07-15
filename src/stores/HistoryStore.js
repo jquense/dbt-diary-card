@@ -4,9 +4,9 @@ var Stores = require('react-flow').Stores
   , _ = require('lodash');
 
 
-module.exports = new Stores.StoreFactory({
+module.exports = Stores.StoreFactory({
 
-	include: DataMixin,
+	include: DataMixin ,
 
 	references: [ 'dal' ],
 
