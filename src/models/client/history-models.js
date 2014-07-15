@@ -1,9 +1,9 @@
 "use strict"
 var _ = require('lodash')
-  , Flow = require('react-flow')
-  , Model = Flow.Model
-  , Collection = Flow.Collection
-  , field = Model.field
+  , DAL = require('react-flow').DataAccess
+  , Model = DAL.Model
+  , Collection = DAL.Collection
+  , field = DAL.field
   , moment = require('moment');
 
 

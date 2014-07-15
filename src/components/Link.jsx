@@ -1,5 +1,5 @@
 var React = require('react')
-  , navigate = require('../actions/navActions').route_navigate;
+ // , navigate = require('../actions/navActions').route_navigate;
 
 
 module.exports = Link = React.createClass({
@@ -8,7 +8,7 @@ module.exports = Link = React.createClass({
 		var route = this.props.route
 		  , params = this.props.routeValues || []
 		  , query  = this.props.routeQuery || {}
-		  , href = this.props.href || App.navStore.getUrl(route, params, query)
+		  , href = this.props.href; // || App.navStore.getUrl(route, params, query)
 
 		return this.transferPropsTo(
 			<a href={href} onClick={this._onClick}>{this.props.children}</a>
@@ -17,7 +17,7 @@ module.exports = Link = React.createClass({
 
 	_onClick: function(e){
 		e.preventDefault()
-		navigate(e.target.getAttribute('href'), { replace: this.props.replace })
+		//navigate(e.target.getAttribute('href'), { replace: this.props.replace })
 		this.props.onClick && this.props.onClick(e);
 	}
 
