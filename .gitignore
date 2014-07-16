@@ -1,6 +1,7 @@
 
 *.nsproj
 node_modules/
+public/
 #################
 ## Visual Studio
 #################
