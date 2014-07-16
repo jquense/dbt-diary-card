@@ -3,10 +3,10 @@
   , FlowObject = require('react-flow/lib/core/Object')
   , $ = require('jquery');
 
-JS.require('JS.Class', function(Class2) {
+// JS.require('JS.Class', function(Class2) {
 
-    require('react-flow/lib/trait-tests')(Class2)
-});
+//     require('react-flow/lib/trait-tests')(Class2)
+// });
 
 window.App = Flow.create()
 
@@ -41,11 +41,7 @@ App.ApplicationView = React.createClass({
   },
 
   render: function(){
-    var ActiveRoute = this.props.activeRoute
-
-    return (
-        <ActiveRoute />
-    )
+    return this.props.activeRoute(null) || <div/>
   },
 
   _onRouteChange: function(){

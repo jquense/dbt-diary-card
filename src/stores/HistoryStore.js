@@ -6,7 +6,7 @@ var Stores = require('react-flow').Stores
 
 module.exports = Stores.StoreFactory({
 
-	include: DataMixin ,
+	include: DataMixin,
 
 	references: [ 'dal' ],
 
